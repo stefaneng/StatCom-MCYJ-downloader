@@ -152,12 +152,9 @@ def merge_agency_info(agency_csv, output_dir = ".", remove_files=False):
             with open(pdf_csv, mode='r', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 header = next(reader)
-                missing_agency_id = 'agency_id' not in header
-                # Only add agency_id if not already present in header
-                if missing_agency_id:
-                    header = ['agency_id', 'agency_name'] + header
+                header = ['agency_name'] + header
                 for row in reader:
-                    combined_rows.append([agency_id, agency_name] + row if missing_agency_id else row)
+                    combined_rows.append([agency_name] + row)
         else:
             print(f"Warning: PDF content details CSV not found for agency ID {agency_id}, skipping...")
             continue
@@ -273,7 +270,7 @@ if __name__ == "__main__":
             with open(csv_file, mode='w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f, quoting=csv.QUOTE_ALL)
                 # Write the header
-                writer.writerow(keep_cols)
+                writer.writerow(['agency_id'] + keep_cols)
                 for p in pdf_results.get('returnValue', {}).get('contentVersionRes', []):
                     row_data = [record_id] + [p.get(k, "") for k in keep_cols]
                     writer.writerow(row_data)
