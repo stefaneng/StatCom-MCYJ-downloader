@@ -60,3 +60,14 @@ $ ls downloads/ | head
 ## 4. Check duplicates and update file metadata
 
 check the md5sums
+
+
+## Parse licensing rules
+
+### Child caring institutions licensing rules
+
+From the PDF file available here: https://www.michigan.gov/mdhhs/-/media/Project/Websites/mdhhs/Doing-Business-with-MDHHS/Child-Welfare/Child_Caring_Institutions_Licensing_Rules.pdf
+
+```bash
+python parse_licensing_rules.py Child_Caring_Institutions_Licensing_Rules.pdf --out="rules_data/child_caring_institution_rules.json"
+```
