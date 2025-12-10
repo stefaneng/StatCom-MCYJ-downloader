@@ -78,3 +78,119 @@ Each processing run creates a new file named: `YYYYMMDD_HHMMSS_pdf_text.parquet`
 
 Example: `20251103_143052_pdf_text.parquet`
 
+## Violation Parsing Tool
+
+The `parse_parquet_violations.py` script parses the parquet files containing PDF text extracts and outputs violation information to CSV.
+
+### What It Does
+
+This script processes all parquet files and extracts structured information about licensing violations:
+- Agency ID (License #)
+- Agency name
+- Inspection/report date
+- List of policies/rules that were violated
+
+The script intelligently filters out rules that are marked as "not violated" or "no violation" and only includes actual violations.
+
+### Usage
+
+**Note**: Run from the project root directory.
+
+#### Basic Usage
+
+Parse all parquet files and create a CSV report:
+
+```bash
+python3 parse_parquet_violations.py
+```
+
+This will read from `pdf_parsing/parquet_files/` by default and output to `violations_output.csv`.
+
+#### Custom Paths
+
+Specify custom input and output paths:
+
+```bash
+python3 parse_parquet_violations.py --parquet-dir /path/to/parquet/files -o my_violations.csv
+```
+
+#### Verbose Mode
+
+Enable detailed logging:
+
+```bash
+python3 parse_parquet_violations.py --verbose
+```
+
+### Output Format
+
+The CSV contains the following columns:
+
+| Column | Description | Example |
+|--------|-------------|---------|
+| `agency_id` | License number | CB250296641, CA110200973 |
+| `date` | Inspection or report date | February 14, 2020 |
+| `agency_name` | Name of the licensed agency | Child & Family Services - Northeast Michigan |
+| `violations_list` | Semicolon-separated list of violated rules | R 400.12421; R 400.12418 |
+| `num_violations` | Count of violations | 2 |
+| `sha256` | SHA256 hash of the source PDF | abc123... |
+| `date_processed` | Timestamp when the PDF was processed | 2025-11-03T13:33:47.274306 |
+
+### Example Output
+
+```csv
+agency_id,date,agency_name,violations_list,num_violations,sha256,date_processed
+CB040201041,February 14, 2020,Child & Family Services - Northeast Michigan,R 400.12324,1,2731d75f...,2025-11-03T13:33:47.274306
+CB040201041,October 25, 2021,Child Family Services of NE Michigan,R 400.12421; R 400.12418,2,d29a479d...,2025-11-03T13:33:47.470767
+CA110200973,04/28/2022,Berrien County Trial Court-Family Division,,0,38b0a4d0...,2025-11-03T13:33:47.750253
+```
+
+### Violation Detection
+
+The parser identifies violations by looking for several patterns:
+
+1. **CPA Rules**: "Rule Code & CPA Rule 400.XXXX" with "Conclusion: Violation Established"
+2. **R 400 Rules**: Michigan Administrative Code references (e.g., "R 400.12421")
+3. **MCL References**: Michigan Compiled Laws (e.g., "MCL 722.954c")
+
+The parser explicitly filters out any rules marked as:
+- "is not violated"
+- "not in violation"
+- "no violation"
+
+This ensures that only actual violations are reported, not compliant items mentioned in the document.
+
+### Example Statistics
+
+When run on the existing parquet files:
+- Processed: 3510 documents
+- Documents with violations: 976
+- Documents without violations: 2534
+
+## Complete Workflow
+
+1. **Extract PDF text**: Use `extract_pdf_text.py` to process PDFs and create parquet files
+   ```bash
+   python3 pdf_parsing/extract_pdf_text.py --pdf-dir /path/to/pdfs
+   ```
+
+2. **Parse violations**: Use `parse_parquet_violations.py` to extract violation information
+   ```bash
+   python3 parse_parquet_violations.py
+   ```
+
+3. **Analyze results**: Use the CSV output for analysis, reporting, or further processing
+
+## Requirements
+
+- Python 3.11+
+- pandas
+- pyarrow
+- pdfplumber (for extract_pdf_text.py)
+- regex (for extract_pdf_text.py)
+
+Install with:
+```bash
+pip install pandas pyarrow pdfplumber regex
+```
+

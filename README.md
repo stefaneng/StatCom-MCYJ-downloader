@@ -60,3 +60,25 @@ $ ls downloads/ | head
 ## 4. Check duplicates and update file metadata
 
 check the md5sums
+
+## 5. Extract text from PDFs and parse violations
+
+Extract text from PDFs and save to parquet files:
+
+```bash
+python3 pdf_parsing/extract_pdf_text.py --pdf-dir Downloads --parquet-dir pdf_parsing/parquet_files
+```
+
+Parse parquet files to extract violation information to CSV:
+
+```bash
+python3 parse_parquet_violations.py --parquet-dir pdf_parsing/parquet_files -o violations_output.csv
+```
+
+The output CSV contains:
+- Agency ID (License #)
+- Agency name
+- Inspection/report date
+- List of policies/rules violated (excluding "not violated" entries)
+
+See [pdf_parsing/README.md](pdf_parsing/README.md) for more details.
