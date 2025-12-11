@@ -252,6 +252,128 @@
             color: #666;
         }
         
+        .view-document-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        
+        .view-document-btn:hover {
+            background: #2980b9;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+        
+        .modal-document-content {
+            background: white;
+            margin: 20px;
+            padding: 0;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .document-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .document-header h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .close-modal {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .close-modal:hover {
+            background: #c0392b;
+        }
+        
+        .document-info {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ecf0f1;
+            display: grid;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .document-info strong {
+            color: #2c3e50;
+        }
+        
+        .document-pages {
+            padding: 20px;
+        }
+        
+        .document-page {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .page-number {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .page-text {
+            padding: 20px;
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            background: white;
+            overflow-x: auto;
+        }
+        
         @media (max-width: 768px) {
             .agency-info {
                 grid-template-columns: 1fr;
@@ -259,6 +381,17 @@
             
             .stat-badge {
                 font-size: 0.85em;
+            }
+            
+            .modal-document-content {
+                margin: 10px;
+                width: calc(100% - 20px);
+                max-height: 95vh;
+            }
+            
+            .page-text {
+                font-size: 0.75em;
+                padding: 15px;
             }
         }
     </style>

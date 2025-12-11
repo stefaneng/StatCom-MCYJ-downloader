@@ -30,6 +30,8 @@ dist/
 
 # Build artifacts
 website/public/data/
+website/public/documents/
+website/test_output/
 metadata_output/
 *.egg-info/
 build/

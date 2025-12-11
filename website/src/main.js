@@ -143,6 +143,11 @@ function renderViolations(violations) {
                 ` : `
                     <div style="color: #27ae60;">✓ No violations found</div>
                 `}
+                ${v.sha256 ? `
+                    <button class="view-document-btn" onclick="viewDocument('${v.sha256}', event)">
+                        📄 View Full Document
+                    </button>
+                ` : ''}
             </div>
         `;
     }).join('');
@@ -154,6 +159,92 @@ function renderViolations(violations) {
         </div>
     `;
 }
+
+async function viewDocument(sha256, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    try {
+        const response = await fetch(`/documents/${sha256}.json`);
+        if (!response.ok) {
+            throw new Error(`Failed to load document: ${response.statusText}`);
+        }
+        
+        const docData = await response.json();
+        showDocumentModal(docData);
+    } catch (error) {
+        console.error('Error loading document:', error);
+        alert(`Failed to load document: ${error.message}`);
+    }
+}
+
+function showDocumentModal(docData) {
+    const modal = document.getElementById('documentModal') || createDocumentModal();
+    const modalContent = modal.querySelector('.modal-document-content');
+    
+    // Validate document data
+    if (!docData.pages || !Array.isArray(docData.pages)) {
+        console.error('Invalid document data: pages array missing or invalid');
+        return;
+    }
+    
+    // Format the document pages
+    const totalPages = docData.pages.length;
+    const pagesHtml = docData.pages.map((page, index) => {
+        return `
+            <div class="document-page">
+                <div class="page-number">Page ${index + 1} of ${totalPages}</div>
+                <pre class="page-text">${escapeHtml(page)}</pre>
+            </div>
+        `;
+    }).join('');
+    
+    modalContent.innerHTML = `
+        <div class="document-header">
+            <h2>Document Details</h2>
+            <button class="close-modal" onclick="closeDocumentModal()">✕</button>
+        </div>
+        <div class="document-info">
+            <div><strong>SHA256:</strong> ${escapeHtml(docData.sha256)}</div>
+            <div><strong>Date Processed:</strong> ${escapeHtml(docData.dateprocessed)}</div>
+            <div><strong>Total Pages:</strong> ${totalPages}</div>
+        </div>
+        <div class="document-pages">
+            ${pagesHtml}
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+}
+
+function createDocumentModal() {
+    const modal = document.createElement('div');
+    modal.id = 'documentModal';
+    modal.className = 'modal';
+    modal.innerHTML = '<div class="modal-document-content"></div>';
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeDocumentModal();
+        }
+    });
+    
+    return modal;
+}
+
+function closeDocumentModal() {
+    const modal = document.getElementById('documentModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Make viewDocument available globally
+window.viewDocument = viewDocument;
+window.closeDocumentModal = closeDocumentModal;
 
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
