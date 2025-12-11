@@ -200,8 +200,10 @@ def extract_violations(text: str) -> List[str]:
     for match in rule_matches:
         rule_ref = match.group(1).strip()
         # Get context around this rule to check if it's violated
+        # Some documents have very long investigation sections (up to ~48,000 chars)
+        # between the rule reference and conclusion, so we search far ahead
         start_pos = match.start()
-        end_pos = min(start_pos + 3000, len(text))  # Look ahead up to 3000 chars
+        end_pos = min(start_pos + 50000, len(text))  # Look ahead up to 50,000 chars
         context = text[start_pos:end_pos]
         
         # Check if this rule is marked as violated
@@ -211,6 +213,24 @@ def extract_violations(text: str) -> List[str]:
             # Check if analysis mentions violation
             if not re.search(r'is not violated|not in violation|no violation', context, re.IGNORECASE):
                 violations.append(f"CPA Rule {rule_ref}")
+    
+    # Pattern 1b: Look for "APPLICABLE RULE" sections in SIRs with "CONCLUSION: VIOLATION ESTABLISHED"
+    # This pattern handles Special Investigation Reports format
+    applicable_rule_pattern = r'APPLICABLE RULE\s+R\s+(400\.\d+[a-z]?(?:\([^\)]+\))?)'
+    applicable_matches = re.finditer(applicable_rule_pattern, text, re.IGNORECASE)
+    
+    for match in applicable_matches:
+        rule_ref = f"R {match.group(1).strip()}"
+        # Get context around this rule to check if it's violated
+        # In SIRs, CONCLUSION can be far from APPLICABLE RULE (typically up to 3000 chars)
+        start_pos = match.start()
+        end_pos = min(start_pos + 3000, len(text))  # Look ahead up to 3000 chars
+        context = text[start_pos:end_pos]
+        
+        # Check if this rule is marked as violated
+        if re.search(r'CONCLUSION:\s*VIOLATION ESTABLISHED', context, re.IGNORECASE):
+            if rule_ref not in [v for v in violations if rule_ref in v]:
+                violations.append(rule_ref)
     
     # Pattern 2: Look for "R 400." references (Michigan Administrative Code)
     r400_pattern = r'R\s+400\.\d+[a-z]?(?:\([^\)]+\))?'

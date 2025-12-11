@@ -1,5 +1,6 @@
 # Generated output files
 violations_output.csv
+violations_output_*.csv
 
 # Python cache
 __pycache__/
