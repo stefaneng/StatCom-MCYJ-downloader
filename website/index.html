@@ -393,6 +393,42 @@
             overflow-x: auto;
         }
         
+        /* Highlighting styles */
+        .page-text mark {
+            padding: 2px 0;
+            border-radius: 2px;
+        }
+        
+        .highlight-not-in-compliance {
+            background-color: #ffcccc;
+            color: #c0392b;
+            font-weight: bold;
+        }
+        
+        .highlight-in-compliance {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
+        
+        .highlight-rule {
+            background-color: #fff3cd;
+            color: #856404;
+            font-weight: 600;
+        }
+        
+        .highlight-violation-established {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+        
+        .highlight-violation-not-established {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            font-weight: bold;
+        }
+        
         @media (max-width: 768px) {
             .agency-info {
                 grid-template-columns: 1fr;
@@ -437,6 +473,54 @@
         </div>
         
         <div id="stats" class="stats"></div>
+        
+        <div class="search-filter" style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 12px; color: #2c3e50; font-size: 1.1em;">Filters</h3>
+            <div style="display: grid; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="filterSirOnly" style="cursor: pointer;">
+                    <span>Special Investigation Reports Only</span>
+                </label>
+                <div style="margin-top: 8px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 6px;">Violations:</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="violationsFilter" value="all" checked style="cursor: pointer;">
+                            <span>All</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="violationsFilter" value="with" style="cursor: pointer;">
+                            <span>With Violations</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="violationsFilter" value="without" style="cursor: pointer;">
+                            <span>Without Violations</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top: 8px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 6px;">Compliance Status:</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="complianceFilter" value="all" checked style="cursor: pointer;">
+                            <span>All Documents</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="complianceFilter" value="not_in_compliance" style="cursor: pointer;">
+                            <span>Not in Compliance</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="complianceFilter" value="in_compliance" style="cursor: pointer;">
+                            <span>In Compliance</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="complianceFilter" value="neither" style="cursor: pointer;">
+                            <span>Neither Phrase Found</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="search-filter">
             <input 

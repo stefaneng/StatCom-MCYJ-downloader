@@ -3,6 +3,13 @@ let allAgencies = [];
 let filteredAgencies = [];
 let currentOpenAgencyId = null;
 
+// Filter state
+let filters = {
+    sirOnly: false,
+    violationsFilter: 'all', // 'all', 'with', 'without'
+    complianceStatus: 'all' // 'all', 'not_in_compliance', 'in_compliance', 'neither'
+};
+
 // Load and display data
 async function init() {
     try {
@@ -20,6 +27,7 @@ async function init() {
         displayAgencies(allAgencies);
         setupSearch();
         setupShaLookup();
+        setupFilters();
         handleUrlHash();
         handleQueryStringDocument();
         
@@ -43,10 +51,12 @@ function showError(message) {
 function displayStats() {
     const statsEl = document.getElementById('stats');
     
-    const totalAgencies = allAgencies.length;
-    const totalViolations = allAgencies.reduce((sum, a) => sum + a.total_violations, 0);
-    const totalReports = allAgencies.reduce((sum, a) => sum + a.total_reports, 0);
-    const agenciesWithViolations = allAgencies.filter(a => a.total_violations > 0).length;
+    // Use filtered agencies for stats
+    const agencies = filteredAgencies;
+    const totalAgencies = agencies.length;
+    const totalViolations = agencies.reduce((sum, a) => sum + a.total_violations, 0);
+    const totalReports = agencies.reduce((sum, a) => sum + a.total_reports, 0);
+    const agenciesWithViolations = agencies.filter(a => a.total_violations > 0).length;
     
     statsEl.innerHTML = `
         <div class="stat-card">
@@ -66,6 +76,92 @@ function displayStats() {
             <div class="stat-label">Reports/Inspections</div>
         </div>
     `;
+}
+
+function applyFilters() {
+    // Start with all agencies
+    let agencies = JSON.parse(JSON.stringify(allAgencies)); // Deep clone
+    
+    // Apply filters to each agency's violations
+    agencies = agencies.map(agency => {
+        if (!agency.violations || !Array.isArray(agency.violations)) {
+            return agency;
+        }
+        
+        let filteredViolations = agency.violations.filter(v => {
+            // Filter by SIR only
+            if (filters.sirOnly && !v.is_special_investigation) {
+                return false;
+            }
+            
+            // Filter by violations
+            if (filters.violationsFilter === 'with' && v.num_violations === 0) {
+                return false;
+            }
+            if (filters.violationsFilter === 'without' && v.num_violations > 0) {
+                return false;
+            }
+            
+            // Filter by compliance status
+            if (filters.complianceStatus === 'not_in_compliance' && !v.has_not_in_compliance) {
+                return false;
+            }
+            if (filters.complianceStatus === 'in_compliance' && !v.has_in_compliance) {
+                return false;
+            }
+            if (filters.complianceStatus === 'neither' && (v.has_not_in_compliance || v.has_in_compliance)) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Update agency stats based on filtered violations
+        return {
+            ...agency,
+            violations: filteredViolations,
+            total_violations: filteredViolations.reduce((sum, v) => sum + v.num_violations, 0),
+            total_reports: filteredViolations.length
+        };
+    });
+    
+    // Remove agencies with no reports after filtering
+    agencies = agencies.filter(agency => agency.total_reports > 0);
+    
+    filteredAgencies = agencies;
+    displayStats();
+    displayAgencies(filteredAgencies);
+}
+
+function setupFilters() {
+    // SIR only filter
+    const sirOnlyCheckbox = document.getElementById('filterSirOnly');
+    sirOnlyCheckbox.addEventListener('change', (e) => {
+        filters.sirOnly = e.target.checked;
+        applyFilters();
+    });
+    
+    // Violations filter
+    const violationsRadios = document.querySelectorAll('input[name="violationsFilter"]');
+    violationsRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                filters.violationsFilter = e.target.value;
+                applyFilters();
+            }
+        });
+    });
+    
+    // Compliance status filter
+    const complianceRadios = document.querySelectorAll('input[name="complianceFilter"]');
+    complianceRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                filters.complianceStatus = e.target.value;
+                applyFilters();
+            }
+        });
+    });
 }
 
 function displayAgencies(agencies) {
@@ -219,6 +315,54 @@ async function viewDocument(sha256, event) {
     }
 }
 
+function highlightText(text, highlightRanges) {
+    // highlightRanges is an array of {start, end, className} objects
+    if (!highlightRanges || highlightRanges.length === 0) {
+        return escapeHtml(text);
+    }
+    
+    // Sort ranges by start position
+    const sortedRanges = [...highlightRanges].sort((a, b) => a.start - b.start);
+    
+    let result = '';
+    let lastIndex = 0;
+    
+    for (const range of sortedRanges) {
+        // Add text before highlight
+        if (range.start > lastIndex) {
+            result += escapeHtml(text.substring(lastIndex, range.start));
+        }
+        
+        // Add highlighted text
+        const highlightedText = escapeHtml(text.substring(range.start, range.end));
+        result += `<mark class="${range.className}">${highlightedText}</mark>`;
+        
+        lastIndex = range.end;
+    }
+    
+    // Add remaining text
+    if (lastIndex < text.length) {
+        result += escapeHtml(text.substring(lastIndex));
+    }
+    
+    return result;
+}
+
+function findTextPositions(text, pattern, flags = 'gi') {
+    const positions = [];
+    const regex = new RegExp(pattern, flags);
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+        positions.push({
+            start: match.index,
+            end: match.index + match[0].length
+        });
+    }
+    
+    return positions;
+}
+
 function showDocumentModal(docData, docMetadata) {
     const modal = document.getElementById('documentModal') || createDocumentModal();
     const modalContent = modal.querySelector('.modal-document-content');
@@ -229,13 +373,78 @@ function showDocumentModal(docData, docMetadata) {
         return;
     }
     
-    // Format the document pages
+    // Get highlighting metadata
+    const highlighting = docData.highlighting || {};
+    
+    // Format the document pages with highlighting
     const totalPages = docData.pages.length;
-    const pagesHtml = docData.pages.map((page, index) => {
+    const pagesHtml = docData.pages.map((page, pageIndex) => {
+        let pageContent = page;
+        const highlightRanges = [];
+        
+        // Highlight compliance phrases
+        if (highlighting.not_in_compliance_pages && highlighting.not_in_compliance_pages.includes(pageIndex)) {
+            const positions = findTextPositions(page, 'is\\s+not\\s+in\\s+compliance', 'gi');
+            positions.forEach(pos => {
+                highlightRanges.push({
+                    ...pos,
+                    className: 'highlight-not-in-compliance'
+                });
+            });
+        }
+        
+        if (highlighting.in_compliance_pages && highlighting.in_compliance_pages.includes(pageIndex)) {
+            const positions = findTextPositions(page, '(?<!not\\s)is\\s+in\\s+compliance', 'gi');
+            positions.forEach(pos => {
+                highlightRanges.push({
+                    ...pos,
+                    className: 'highlight-in-compliance'
+                });
+            });
+        }
+        
+        // Highlight rules and violation statuses
+        if (highlighting.violations_detailed && Array.isArray(highlighting.violations_detailed)) {
+            for (const vDetail of highlighting.violations_detailed) {
+                if (vDetail.rule_page === pageIndex) {
+                    // Highlight the rule reference
+                    const rulePattern = vDetail.rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const positions = findTextPositions(page, rulePattern, 'gi');
+                    positions.forEach(pos => {
+                        highlightRanges.push({
+                            ...pos,
+                            className: 'highlight-rule'
+                        });
+                    });
+                }
+                
+                if (vDetail.status_page === pageIndex) {
+                    // Highlight violation established/not established
+                    const statusPattern = vDetail.violation_status === 'established' 
+                        ? '(?:Repeat\\s+)?Violation\\s+Established' 
+                        : 'Violation\\s+Not\\s+Established';
+                    const positions = findTextPositions(page, statusPattern, 'gi');
+                    positions.forEach(pos => {
+                        highlightRanges.push({
+                            ...pos,
+                            className: vDetail.violation_status === 'established' 
+                                ? 'highlight-violation-established' 
+                                : 'highlight-violation-not-established'
+                        });
+                    });
+                }
+            }
+        }
+        
+        // Apply highlighting
+        const highlightedContent = highlightRanges.length > 0 
+            ? highlightText(page, highlightRanges)
+            : escapeHtml(page);
+        
         return `
             <div class="document-page">
-                <div class="page-number">Page ${index + 1} of ${totalPages}</div>
-                <pre class="page-text">${escapeHtml(page)}</pre>
+                <div class="page-number">Page ${pageIndex + 1} of ${totalPages}</div>
+                <pre class="page-text">${highlightedContent}</pre>
             </div>
         `;
     }).join('');
@@ -546,10 +755,11 @@ function setupSearch() {
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         
-        if (!searchTerm) {
-            filteredAgencies = allAgencies;
-        } else {
-            filteredAgencies = allAgencies.filter(agency => {
+        // Apply filters first, then search
+        applyFilters();
+        
+        if (searchTerm) {
+            filteredAgencies = filteredAgencies.filter(agency => {
                 return (
                     agency.AgencyName?.toLowerCase().includes(searchTerm) ||
                     agency.agencyId?.toLowerCase().includes(searchTerm)
@@ -557,6 +767,7 @@ function setupSearch() {
             });
         }
         
+        displayStats();
         displayAgencies(filteredAgencies);
     });
 }

@@ -32,6 +32,22 @@ def load_violations_csv(csv_path):
             # Track agency name for this ID
             if agency_id and agency_name:
                 agency_names[agency_id] = agency_name
+            
+            # Parse JSON fields
+            try:
+                not_in_compliance_pages = json.loads(row.get('not_in_compliance_pages', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                not_in_compliance_pages = []
+            
+            try:
+                in_compliance_pages = json.loads(row.get('in_compliance_pages', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                in_compliance_pages = []
+            
+            try:
+                violations_detailed = json.loads(row.get('violations_detailed', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                violations_detailed = []
                 
             violation = {
                 'date': row.get('date', ''),
@@ -39,6 +55,12 @@ def load_violations_csv(csv_path):
                 'document_title': row.get('document_title', ''),
                 'violations_list': row.get('violations_list', ''),
                 'num_violations': int(row.get('num_violations', 0)),
+                'is_special_investigation': row.get('is_special_investigation', 'False').lower() in ('true', '1', 'yes'),
+                'has_not_in_compliance': row.get('has_not_in_compliance', 'False').lower() in ('true', '1', 'yes'),
+                'has_in_compliance': row.get('has_in_compliance', 'False').lower() in ('true', '1', 'yes'),
+                'not_in_compliance_pages': not_in_compliance_pages,
+                'in_compliance_pages': in_compliance_pages,
+                'violations_detailed': violations_detailed,
                 'sha256': row.get('sha256', ''),
                 'date_processed': row.get('date_processed', '')
             }

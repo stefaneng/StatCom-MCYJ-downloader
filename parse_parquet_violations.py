@@ -16,6 +16,7 @@ Output is saved as a CSV file with one row per document.
 import argparse
 import ast
 import csv
+import json
 import logging
 import re
 import sys
@@ -211,6 +212,188 @@ def is_special_investigation(text: str) -> bool:
     return False
 
 
+def char_position_to_page(text_pages: List[str], char_pos: int) -> int:
+    """Convert character position in full text to page index."""
+    current_pos = 0
+    for page_idx, page_text in enumerate(text_pages):
+        page_len = len(page_text) + 1  # +1 for the newline joining pages
+        if char_pos < current_pos + page_len:
+            return page_idx
+        current_pos += page_len
+    return len(text_pages) - 1  # Return last page if not found
+
+
+def find_compliance_phrases(text_pages: List[str]) -> Dict[str, Any]:
+    """Find compliance phrases and their page locations.
+    
+    Returns dict with:
+    - has_not_in_compliance: bool
+    - has_in_compliance: bool  
+    - not_in_compliance_pages: list of page indices
+    - in_compliance_pages: list of page indices
+    """
+    result = {
+        'has_not_in_compliance': False,
+        'has_in_compliance': False,
+        'not_in_compliance_pages': [],
+        'in_compliance_pages': []
+    }
+    
+    for page_idx, page_text in enumerate(text_pages):
+        # Look for "is not in compliance" phrase
+        if re.search(r'is\s+not\s+in\s+compliance', page_text, re.IGNORECASE):
+            result['has_not_in_compliance'] = True
+            if page_idx not in result['not_in_compliance_pages']:
+                result['not_in_compliance_pages'].append(page_idx)
+        
+        # Look for "is in compliance" phrase (but not "is not in compliance")
+        # Use negative lookbehind to exclude "not"
+        if re.search(r'(?<!not\s)is\s+in\s+compliance', page_text, re.IGNORECASE):
+            result['has_in_compliance'] = True
+            if page_idx not in result['in_compliance_pages']:
+                result['in_compliance_pages'].append(page_idx)
+    
+    return result
+
+
+def extract_violations_detailed(text_pages: List[str]) -> Dict[str, Any]:
+    """Extract violations with detailed location information.
+    
+    Returns dict with:
+    - violations: list of rule names
+    - violations_detailed: list of dicts with rule, rule_page, violation_status, status_page
+    """
+    full_text = '\n'.join(text_pages)
+    violations = []
+    violations_detailed = []
+    
+    # Pattern 1: Look for "Rule Code & Section" with "Violation Established" or "Violation" conclusion
+    rule_pattern = r'Rule Code & (?:CPA|CCI) Rule\s+(\d+\.\d+[^\n]*)'
+    rule_matches = list(re.finditer(rule_pattern, full_text, re.IGNORECASE))
+
+    for i, match in enumerate(rule_matches):
+        rule_ref = match.group(1).strip()
+        rule_page = char_position_to_page(text_pages, match.start())
+        start_pos = match.start()
+        
+        # Limit search to current rule section
+        if i + 1 < len(rule_matches):
+            end_pos = rule_matches[i + 1].start()
+        else:
+            end_pos = min(start_pos + 50000, len(full_text))
+        
+        context = full_text[start_pos:end_pos]
+
+        # Check if this rule is marked as violated
+        violation_match = re.search(r'Conclusion\s+(?:Repeat\s+)?(Violation Established|Violation Not Established)', context, re.IGNORECASE)
+        if violation_match:
+            status = violation_match.group(1)
+            status_page = char_position_to_page(text_pages, start_pos + violation_match.start())
+            
+            if 'Violation Established' in status:
+                violations.append(f"Rule {rule_ref}")
+                violations_detailed.append({
+                    'rule': f"Rule {rule_ref}",
+                    'rule_page': rule_page,
+                    'violation_status': 'established',
+                    'status_page': status_page
+                })
+            else:
+                violations_detailed.append({
+                    'rule': f"Rule {rule_ref}",
+                    'rule_page': rule_page,
+                    'violation_status': 'not_established',
+                    'status_page': status_page
+                })
+    
+    # Pattern 1b: Look for "APPLICABLE RULE" sections in SIRs
+    applicable_rule_pattern = r'APPLICABLE RULE\s+R\s+(400\.\d+[a-z]?(?:\([^\)]+\))?)'
+    applicable_matches = re.finditer(applicable_rule_pattern, full_text, re.IGNORECASE)
+    
+    for match in applicable_matches:
+        rule_ref = f"R {match.group(1).strip()}"
+        rule_page = char_position_to_page(text_pages, match.start())
+        start_pos = match.start()
+        end_pos = min(start_pos + 3000, len(full_text))
+        context = full_text[start_pos:end_pos]
+        
+        # Check if this rule is marked as violated
+        violation_match = re.search(r'CONCLUSION:\s*(VIOLATION ESTABLISHED|VIOLATION NOT ESTABLISHED)', context, re.IGNORECASE)
+        if violation_match:
+            status = violation_match.group(1)
+            status_page = char_position_to_page(text_pages, start_pos + violation_match.start())
+            
+            if 'VIOLATION ESTABLISHED' in status.upper():
+                if rule_ref not in [v for v in violations if rule_ref in v]:
+                    violations.append(rule_ref)
+                    violations_detailed.append({
+                        'rule': rule_ref,
+                        'rule_page': rule_page,
+                        'violation_status': 'established',
+                        'status_page': status_page
+                    })
+            else:
+                # Only add to detailed if not already there
+                if not any(v['rule'] == rule_ref for v in violations_detailed):
+                    violations_detailed.append({
+                        'rule': rule_ref,
+                        'rule_page': rule_page,
+                        'violation_status': 'not_established',
+                        'status_page': status_page
+                    })
+    
+    # Pattern 2: Look for "R 400." references (Michigan Administrative Code)
+    r400_pattern = r'R\s+400\.\d+[a-z]?(?:\([^\)]+\))?'
+    r400_matches = re.finditer(r400_pattern, full_text, re.IGNORECASE)
+    
+    for match in r400_matches:
+        rule_ref = match.group(0).strip()
+        rule_page = char_position_to_page(text_pages, match.start())
+        start_pos = max(0, match.start() - 500)
+        end_pos = min(match.end() + 500, len(full_text))
+        context = full_text[start_pos:end_pos]
+        
+        # Only include if context suggests violation
+        if re.search(r'violation|violated|non-compliance|not.*compliance', context, re.IGNORECASE):
+            if not re.search(r'is not violated|not in violation|no violation', context, re.IGNORECASE):
+                if rule_ref not in [v for v in violations if rule_ref in v]:
+                    violations.append(rule_ref)
+                    violations_detailed.append({
+                        'rule': rule_ref,
+                        'rule_page': rule_page,
+                        'violation_status': 'established',
+                        'status_page': rule_page  # Best guess
+                    })
+    
+    # Pattern 3: Look for MCL (Michigan Compiled Laws) references
+    mcl_pattern = r'MCL\s+\d+\.\d+[a-z]?'
+    mcl_matches = re.finditer(mcl_pattern, full_text, re.IGNORECASE)
+    
+    for match in mcl_matches:
+        rule_ref = match.group(0).strip()
+        rule_page = char_position_to_page(text_pages, match.start())
+        start_pos = max(0, match.start() - 500)
+        end_pos = min(match.end() + 500, len(full_text))
+        context = full_text[start_pos:end_pos]
+        
+        # Only include if context suggests violation
+        if re.search(r'violation|violated|non-compliance|not.*compliance', context, re.IGNORECASE):
+            if not re.search(r'is not violated|not in violation|no violation', context, re.IGNORECASE):
+                if rule_ref not in [v for v in violations if rule_ref in v]:
+                    violations.append(rule_ref)
+                    violations_detailed.append({
+                        'rule': rule_ref,
+                        'rule_page': rule_page,
+                        'violation_status': 'established',
+                        'status_page': rule_page  # Best guess
+                    })
+    
+    return {
+        'violations': violations,
+        'violations_detailed': violations_detailed
+    }
+
+
 def extract_violations(text: str) -> List[str]:
     """Extract list of violated policies/rules from text."""
     violations = []
@@ -313,8 +496,15 @@ def parse_document(text_pages: List[str]) -> Dict[str, Any]:
     agency_name = extract_agency_name(full_text)
     document_title = extract_document_title(full_text)
     inspection_date = extract_inspection_date(full_text)
-    violations = extract_violations(full_text)
     is_sir = is_special_investigation(full_text)
+    
+    # Extract violations with detailed location information
+    violations_data = extract_violations_detailed(text_pages)
+    violations = violations_data['violations']
+    violations_detailed = violations_data['violations_detailed']
+    
+    # Find compliance phrases
+    compliance_info = find_compliance_phrases(text_pages)
 
     return {
         'agency_id': license_number,
@@ -323,7 +513,12 @@ def parse_document(text_pages: List[str]) -> Dict[str, Any]:
         'document_title': document_title,
         'violations': violations,
         'num_violations': len(violations),
-        'is_special_investigation': is_sir
+        'is_special_investigation': is_sir,
+        'violations_detailed': violations_detailed,
+        'has_not_in_compliance': compliance_info['has_not_in_compliance'],
+        'has_in_compliance': compliance_info['has_in_compliance'],
+        'not_in_compliance_pages': compliance_info['not_in_compliance_pages'],
+        'in_compliance_pages': compliance_info['in_compliance_pages']
     }
 
 
@@ -392,7 +587,14 @@ def process_parquet_files(parquet_dir: str, output_csv: str) -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(output_csv, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['agency_id', 'date', 'agency_name', 'document_title', 'is_special_investigation', 'violations_list', 'num_violations', 'sha256', 'date_processed']
+            fieldnames = [
+                'agency_id', 'date', 'agency_name', 'document_title', 
+                'is_special_investigation', 'violations_list', 'num_violations', 
+                'has_not_in_compliance', 'has_in_compliance',
+                'not_in_compliance_pages', 'in_compliance_pages',
+                'violations_detailed',
+                'sha256', 'date_processed'
+            ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()
@@ -406,6 +608,11 @@ def process_parquet_files(parquet_dir: str, output_csv: str) -> None:
                     'is_special_investigation': record['is_special_investigation'],
                     'violations_list': '; '.join(record['violations']) if record['violations'] else '',
                     'num_violations': record['num_violations'],
+                    'has_not_in_compliance': record.get('has_not_in_compliance', False),
+                    'has_in_compliance': record.get('has_in_compliance', False),
+                    'not_in_compliance_pages': json.dumps(record.get('not_in_compliance_pages', [])),
+                    'in_compliance_pages': json.dumps(record.get('in_compliance_pages', [])),
+                    'violations_detailed': json.dumps(record.get('violations_detailed', [])),
                     'sha256': record['sha256'],
                     'date_processed': record['date_processed']
                 })

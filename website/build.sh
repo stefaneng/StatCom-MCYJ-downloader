@@ -26,7 +26,8 @@ echo ""
 echo "==> Step 2.5: Exporting parquet documents to individual JSON files..."
 python3 export_parquet_to_json.py \
   --parquet-dir ../pdf_parsing/parquet_files \
-  --output-dir public/documents
+  --output-dir public/documents \
+  --violations-csv ../violations_output.csv
 
 echo ""
 echo "==> Step 3: Building website with Vite..."

@@ -3,16 +3,18 @@
 Export each row from parquet files to individual JSON files.
 
 This script reads all parquet files and creates a separate JSON file
-for each document (row) containing the full text content.
+for each document (row) containing the full text content and highlighting metadata.
 The JSON files are named by their sha256 hash for easy lookup.
 """
 
 import argparse
 import ast
+import csv
 import json
 import logging
 import sys
 from pathlib import Path
+from typing import Dict, Optional
 
 import pandas as pd
 
@@ -20,7 +22,50 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-def export_parquet_to_json(parquet_dir: str, output_dir: str) -> None:
+def load_violations_metadata(violations_csv: str) -> Dict[str, Dict]:
+    """Load violations CSV and create a lookup by SHA256."""
+    metadata_by_sha = {}
+    
+    if not violations_csv or not Path(violations_csv).exists():
+        logger.warning(f"Violations CSV not found: {violations_csv}")
+        return metadata_by_sha
+    
+    with open(violations_csv, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sha256 = row.get('sha256', '').strip()
+            if not sha256:
+                continue
+            
+            # Parse JSON fields
+            try:
+                not_in_compliance_pages = json.loads(row.get('not_in_compliance_pages', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                not_in_compliance_pages = []
+            
+            try:
+                in_compliance_pages = json.loads(row.get('in_compliance_pages', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                in_compliance_pages = []
+            
+            try:
+                violations_detailed = json.loads(row.get('violations_detailed', '[]'))
+            except (json.JSONDecodeError, TypeError):
+                violations_detailed = []
+            
+            metadata_by_sha[sha256] = {
+                'has_not_in_compliance': row.get('has_not_in_compliance', 'False').lower() in ('true', '1', 'yes'),
+                'has_in_compliance': row.get('has_in_compliance', 'False').lower() in ('true', '1', 'yes'),
+                'not_in_compliance_pages': not_in_compliance_pages,
+                'in_compliance_pages': in_compliance_pages,
+                'violations_detailed': violations_detailed
+            }
+    
+    logger.info(f"Loaded metadata for {len(metadata_by_sha)} documents")
+    return metadata_by_sha
+
+
+def export_parquet_to_json(parquet_dir: str, output_dir: str, violations_csv: Optional[str] = None) -> None:
     """Export each parquet row to a separate JSON file."""
     parquet_path = Path(parquet_dir)
     output_path = Path(output_dir)
@@ -31,6 +76,9 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str) -> None:
     
     # Create output directory
     output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Load violations metadata if provided
+    violations_metadata = load_violations_metadata(violations_csv) if violations_csv else {}
     
     # Find all parquet files
     parquet_files = list(parquet_path.glob("*.parquet"))
@@ -76,12 +124,23 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str) -> None:
                     # If already a list or array, convert to list
                     text_pages = list(text_data) if text_data is not None else []
                 
-                # Create JSON document
+                # Create JSON document with base data
                 document = {
                     'sha256': sha256,
                     'dateprocessed': str(dateprocessed),
                     'pages': text_pages
                 }
+                
+                # Add highlighting metadata if available
+                if sha256 in violations_metadata:
+                    metadata = violations_metadata[sha256]
+                    document['highlighting'] = {
+                        'has_not_in_compliance': metadata['has_not_in_compliance'],
+                        'has_in_compliance': metadata['has_in_compliance'],
+                        'not_in_compliance_pages': metadata['not_in_compliance_pages'],
+                        'in_compliance_pages': metadata['in_compliance_pages'],
+                        'violations_detailed': metadata['violations_detailed']
+                    }
                 
                 # Write to individual JSON file
                 output_file = output_path / f"{sha256}.json"
@@ -106,7 +165,7 @@ def main():
     script_dir = Path(__file__).parent.absolute()
     
     parser = argparse.ArgumentParser(
-        description="Export parquet rows to individual JSON files"
+        description="Export parquet rows to individual JSON files with highlighting metadata"
     )
     parser.add_argument(
         "--parquet-dir",
@@ -117,6 +176,11 @@ def main():
         "--output-dir",
         default=str(script_dir / "public/documents"),
         help="Output directory for JSON files (default: public/documents)"
+    )
+    parser.add_argument(
+        "--violations-csv",
+        default=str(script_dir / "../violations_output.csv"),
+        help="Path to violations CSV file for highlighting metadata (default: ../violations_output.csv)"
     )
     parser.add_argument(
         "--verbose",
@@ -132,7 +196,7 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     
-    export_parquet_to_json(args.parquet_dir, args.output_dir)
+    export_parquet_to_json(args.parquet_dir, args.output_dir, args.violations_csv)
 
 
 if __name__ == "__main__":
