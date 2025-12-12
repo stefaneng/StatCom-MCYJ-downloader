@@ -19,6 +19,7 @@ async function init() {
         displayStats();
         displayAgencies(allAgencies);
         setupSearch();
+        setupShaLookup();
         handleUrlHash();
         handleQueryStringDocument();
         
@@ -203,7 +204,8 @@ async function viewDocument(sha256, event) {
                 if (violation) {
                     docMetadata = {
                         title: violation.document_title || violation.agency_name || 'Untitled Document',
-                        num_violations: violation.num_violations || 0
+                        num_violations: violation.num_violations || 0,
+                        violations_list: violation.violations_list || ''
                     };
                     break;
                 }
@@ -246,17 +248,23 @@ function showDocumentModal(docData, docMetadata) {
         <div class="document-info">
             ${docMetadata ? `
                 <div><strong>Title:</strong> ${escapeHtml(docMetadata.title)}</div>
-                <div><strong>Violations:</strong> ${docMetadata.num_violations}</div>
+                ${docMetadata.num_violations > 0 ? `
+                    <div style="word-break: break-word; overflow-wrap: break-word;"><strong>Violations Found:</strong> ${escapeHtml(docMetadata.violations_list)}</div>
+                ` : `
+                    <div style="color: #27ae60;"><strong>Violations:</strong> ✓ No violations found</div>
+                `}
             ` : ''}
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <strong>SHA256:</strong>
-                <span style="overflow-x: auto; white-space: nowrap; font-family: monospace; font-size: 0.9em; max-width: 35%; flex-shrink: 0;">${escapeHtml(docData.sha256)}</span>
-                <button class="copy-link-btn" onclick="copySHA('${docData.sha256}', event)" title="Copy SHA256">
-                    📋
-                </button>
-                <button class="copy-link-btn" onclick="copyDocumentLink('${docData.sha256}', event)" title="Copy link to this document">
-                    🔗
-                </button>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong style="flex-shrink: 0;">SHA256:</strong>
+                <span style="overflow-x: auto; white-space: nowrap; font-family: monospace; font-size: 0.9em; flex: 1; min-width: 0;">${escapeHtml(docData.sha256)}</span>
+                <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                    <button class="copy-link-btn" onclick="copySHA('${docData.sha256}', event)" title="Copy SHA256">
+                        📋
+                    </button>
+                    <button class="copy-link-btn" onclick="copyDocumentLink('${docData.sha256}', event)" title="Copy link to this document">
+                        🔗
+                    </button>
+                </div>
             </div>
             <div><strong>Date Processed:</strong> ${escapeHtml(docData.dateprocessed)}</div>
             <div><strong>Total Pages:</strong> ${totalPages}</div>
@@ -551,6 +559,38 @@ function setupSearch() {
         
         displayAgencies(filteredAgencies);
     });
+}
+
+function setupShaLookup() {
+    const shaInput = document.getElementById('shaLookupInput');
+    const shaBtn = document.getElementById('shaLookupBtn');
+    
+    const performLookup = () => {
+        const sha = shaInput.value.trim();
+        if (sha) {
+            // Update URL with SHA query parameter
+            const newUrl = `${window.location.pathname}?sha=${encodeURIComponent(sha)}`;
+            window.location.href = newUrl;
+        }
+    };
+    
+    shaBtn.addEventListener('click', performLookup);
+    
+    shaInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            performLookup();
+        }
+    });
+}
+
+function checkShaQueryParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sha = urlParams.get('sha');
+    
+    if (sha) {
+        // Automatically view the document for this SHA
+        viewDocument(sha, null);
+    }
 }
 
 function escapeHtml(text) {

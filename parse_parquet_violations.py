@@ -219,15 +219,24 @@ def extract_violations(text: str) -> List[str]:
     # Pattern 1: Look for "Rule Code & Section" with "Violation Established" or "Violation" conclusion
     # Matches both "CPA Rule" and "CCI Rule" (Child Protective Agency and Child Caring Institution)
     rule_pattern = r'Rule Code & (?:CPA|CCI) Rule\s+(\d+\.\d+[^\n]*)'
-    rule_matches = re.finditer(rule_pattern, text, re.IGNORECASE)
+    rule_matches = list(re.finditer(rule_pattern, text, re.IGNORECASE))
 
-    for match in rule_matches:
+    for i, match in enumerate(rule_matches):
         rule_ref = match.group(1).strip()
         # Get context around this rule to check if it's violated
         # Some documents have very long investigation sections (up to ~48,000 chars)
         # between the rule reference and conclusion, so we search far ahead
         start_pos = match.start()
-        end_pos = min(start_pos + 50000, len(text))  # Look ahead up to 50,000 chars
+        
+        # Limit search to current rule section by finding the next rule boundary
+        # This prevents matching conclusions from subsequent rules
+        if i + 1 < len(rule_matches):
+            # If there's a next rule, stop before it starts
+            end_pos = rule_matches[i + 1].start()
+        else:
+            # If this is the last rule, search up to 50,000 chars or end of document
+            end_pos = min(start_pos + 50000, len(text))
+        
         context = text[start_pos:end_pos]
 
         # Check if this rule is marked as violated

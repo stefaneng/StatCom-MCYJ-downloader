@@ -1,0 +1,145 @@
+================================================================================
+TASK COMPLETION SUMMARY
+================================================================================
+
+Task: Read sha 6e5b899cf078b4bf0829e4dce8113aaac61edfa5bc0958efa725ae8607008f68
+      from the parquets, run the violation parsing script, and look for 
+      discrepancy
+
+Status: ✓ COMPLETED SUCCESSFULLY
+
+================================================================================
+WHAT WAS FOUND
+================================================================================
+
+SHA: 6e5b899cf078b4bf0829e4dce8113aaac61edfa5bc0958efa725ae8607008f68
+Document: Special Investigation Report #2024C0001157SI
+Agency: Lotus Treatment Program (License #: CI411000929)
+
+DISCREPANCY IDENTIFIED:
+  The violation parsing script was incorrectly identifying 2 violations when
+  the document only contained 1 actual violation.
+
+  Incorrect Output (Before Fix):
+    - Rule 400.4158 Intervention standards and prohibitions (FALSE POSITIVE)
+    - Rule 400.4109 Program Statement (CORRECT)
+
+  Correct Output (After Fix):
+    - Rule 400.4109 Program Statement (CORRECT)
+
+ROOT CAUSE:
+  The extract_violations() function in parse_parquet_violations.py searched
+  up to 50,000 characters ahead from each "Rule Code" pattern to find 
+  conclusions. When multiple rules appeared in a document, this caused the
+  conclusion from a later rule to be incorrectly matched to an earlier rule.
+
+  Specifically for this document:
+    - Rule 400.4158 conclusion: "Violation Not Established" (at ~10,981 chars)
+    - Rule 400.4109 conclusion: "Repeat Violation Established" (at ~13,357 chars)
+    - The parser from Rule 400.4158 found BOTH conclusions and matched the second
+
+================================================================================
+WHAT WAS FIXED
+================================================================================
+
+Modified parse_parquet_violations.py (lines 214-250):
+  - Changed to convert rule_matches to a list to enable indexing
+  - Added logic to find the next rule boundary
+  - Limited context search to stop at the next "Rule Code" section
+  - Prevents cross-contamination between rule sections
+
+Code Change:
+  OLD: end_pos = min(start_pos + 50000, len(text))
+  NEW: if i + 1 < len(rule_matches):
+           end_pos = rule_matches[i + 1].start()  # Stop at next rule
+       else:
+           end_pos = min(start_pos + 50000, len(text))
+
+================================================================================
+DELIVERABLES
+================================================================================
+
+1. investigate_sha.py
+   - New command-line tool to investigate specific documents by SHA256 hash
+   - Usage: python3 investigate_sha.py <sha256> [--full-text]
+   - Displays parsed violations and original document text
+   - Executable with proper permissions
+
+2. DISCREPANCY_REPORT.md
+   - Detailed analysis of the bug
+   - Technical explanation of the root cause
+   - Step-by-step reproduction instructions
+   - Impact assessment
+
+3. FIX_SUMMARY.md
+   - Overview of the problem and solution
+   - Before/after comparison
+   - Code changes explanation
+   - Testing recommendations
+
+4. Updated parse_parquet_violations.py
+   - Fixed extract_violations() function
+   - Proper scoping of conclusion searches
+   - Prevents false positives
+
+5. Updated README.md
+   - Added documentation for investigate_sha.py tool
+   - Usage examples
+   - Integration with existing workflow
+
+================================================================================
+VERIFICATION & TESTING
+================================================================================
+
+✓ Specific SHA Verification:
+  - Before: 2 violations (1 false positive)
+  - After: 1 violation (correct)
+
+✓ Full Parsing Test:
+  - Processed: 3,510 documents
+  - Documents with violations: 2,212
+  - All processed successfully
+
+✓ Code Quality:
+  - Code review completed
+  - All feedback addressed
+  - Security scan passed (0 vulnerabilities)
+
+✓ Functionality Tests:
+  - investigate_sha.py works correctly
+  - --full-text flag implemented and tested
+  - Parsing logic validated on multiple document types
+
+================================================================================
+HOW TO USE
+================================================================================
+
+1. Investigate a specific SHA:
+   python3 investigate_sha.py 6e5b899cf078b4bf0829e4dce8113aaac61edfa5bc0958efa725ae8607008f68
+
+2. Run violation parsing on all documents:
+   python3 parse_parquet_violations.py --parquet-dir pdf_parsing/parquet_files -o violations_output.csv
+
+3. View detailed discrepancy analysis:
+   cat DISCREPANCY_REPORT.md
+
+4. View fix summary:
+   cat FIX_SUMMARY.md
+
+================================================================================
+IMPACT
+================================================================================
+
+This fix resolves a critical bug that was causing:
+  - False positive violation reports
+  - Inflated violation counts
+  - Incorrect facility compliance assessments
+  
+The bug particularly affected documents with multiple rules where:
+  - First rule: "Violation Not Established"
+  - Subsequent rule: "Violation Established"
+
+This pattern is common in Special Investigation Reports and other multi-rule
+documents, making this a significant fix for data accuracy.
+
+================================================================================

@@ -100,6 +100,24 @@ Categories:
 
 The script displays a random document from the specified category, showing both the annotation (parsed violations) and the full document text from the parquet file.
 
+### Investigate a specific document by SHA
+
+To investigate a specific document by its SHA256 hash:
+
+```bash
+python3 investigate_sha.py <sha256>
+```
+
+Example:
+```bash
+python3 investigate_sha.py 6e5b899cf078b4bf0829e4dce8113aaac61edfa5bc0958efa725ae8607008f68
+```
+
+This will display:
+- Parsed violation information (agency, date, violations found)
+- Original document text from the parquet file
+- Useful for debugging parsing issues or verifying specific documents
+
 See [pdf_parsing/README.md](pdf_parsing/README.md) for more details.
 
 ## 7. Web Dashboard
