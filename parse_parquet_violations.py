@@ -268,7 +268,8 @@ def extract_violations_detailed(text_pages: List[str]) -> Dict[str, Any]:
     violations_detailed = []
     
     # Pattern 1: Look for "Rule Code & Section" with "Violation Established" or "Violation" conclusion
-    rule_pattern = r'Rule Code & (?:CPA|CCI) Rule\s+(\d+\.\d+[^\n]*)'
+    # Note: Both ampersand and agency type (CCI/CPA) are optional as some documents omit them
+    rule_pattern = r'Rule Code\s*&?\s*(?:(?:CPA|CCI)\s+)?Rule\s+(\d+\.\d+[^\n]*)'
     rule_matches = list(re.finditer(rule_pattern, full_text, re.IGNORECASE))
 
     for i, match in enumerate(rule_matches):
@@ -401,7 +402,8 @@ def extract_violations(text: str) -> List[str]:
     # Look for specific violation sections
     # Pattern 1: Look for "Rule Code & Section" with "Violation Established" or "Violation" conclusion
     # Matches both "CPA Rule" and "CCI Rule" (Child Protective Agency and Child Caring Institution)
-    rule_pattern = r'Rule Code & (?:CPA|CCI) Rule\s+(\d+\.\d+[^\n]*)'
+    # Note: Both ampersand and agency type (CCI/CPA) are optional as some documents omit them
+    rule_pattern = r'Rule Code\s*&?\s*(?:(?:CPA|CCI)\s+)?Rule\s+(\d+\.\d+[^\n]*)'
     rule_matches = list(re.finditer(rule_pattern, text, re.IGNORECASE))
 
     for i, match in enumerate(rule_matches):
