@@ -15,10 +15,36 @@ from collections import defaultdict
 from pathlib import Path
 
 
-def load_document_info_csv(csv_path):
+def load_sir_summaries_csv(csv_path):
+    """Load SIR summaries CSV and create a lookup by SHA256."""
+    summaries_by_sha = {}
+    
+    if not os.path.exists(csv_path):
+        print(f"Warning: SIR summaries file not found: {csv_path}")
+        return summaries_by_sha
+    
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sha256 = row.get('sha256', '').strip()
+            if not sha256:
+                continue
+            
+            summaries_by_sha[sha256] = {
+                'summary': row.get('response', ''),  # 'response' column contains the AI-generated summary text
+                'violation': row.get('violation', '')
+            }
+    
+    return summaries_by_sha
+
+
+def load_document_info_csv(csv_path, sir_summaries=None):
     """Load document info CSV and group by agency."""
     documents_by_agency = defaultdict(list)
     agency_names = {}  # Map agency_id to agency_name
+    
+    if sir_summaries is None:
+        sir_summaries = {}
     
     with open(csv_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -33,28 +59,41 @@ def load_document_info_csv(csv_path):
             if agency_id and agency_name:
                 agency_names[agency_id] = agency_name
             
+            sha256 = row.get('sha256', '')
             document = {
                 'date': row.get('date', ''),
                 'agency_name': agency_name,
                 'document_title': row.get('document_title', ''),
                 'is_special_investigation': row.get('is_special_investigation', 'False').lower() in ('true', '1', 'yes'),
-                'sha256': row.get('sha256', ''),
+                'sha256': sha256,
                 'date_processed': row.get('date_processed', '')
             }
+            
+            # Add SIR summary if available
+            if sha256 in sir_summaries:
+                document['sir_summary'] = sir_summaries[sha256]
+            
             documents_by_agency[agency_id].append(document)
     
     return documents_by_agency, agency_names
 
 
-def generate_json_files(document_csv, output_dir):
+def generate_json_files(document_csv, output_dir, sir_summaries_csv=None):
     """Generate JSON files for the website."""
     
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
     
+    # Load SIR summaries if provided
+    sir_summaries = {}
+    if sir_summaries_csv:
+        print("Loading SIR summaries data...")
+        sir_summaries = load_sir_summaries_csv(sir_summaries_csv)
+        print(f"Loaded {len(sir_summaries)} SIR summaries")
+    
     # Load document info data
     print("Loading document info data...")
-    documents_by_agency, agency_names = load_document_info_csv(document_csv)
+    documents_by_agency, agency_names = load_document_info_csv(document_csv, sir_summaries)
     
     # Build agency list from document data
     print("Building agency list from documents...")
@@ -111,6 +150,10 @@ def main():
         help="Path to document info CSV file"
     )
     parser.add_argument(
+        "--sir-summaries-csv",
+        help="Path to SIR summaries CSV file (optional)"
+    )
+    parser.add_argument(
         "--output-dir",
         default="public/data",
         help="Output directory for JSON files"
@@ -125,7 +168,8 @@ def main():
     
     generate_json_files(
         args.document_csv,
-        args.output_dir
+        args.output_dir,
+        args.sir_summaries_csv
     )
 
 

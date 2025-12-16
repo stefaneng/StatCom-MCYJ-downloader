@@ -192,6 +192,7 @@ function renderDocuments(documents) {
         // Use document title if available, otherwise fall back to agency name
         const displayTitle = d.document_title || d.agency_name || 'Untitled Document';
         const isSir = d.is_special_investigation;
+        const hasSummary = d.sir_summary && d.sir_summary.summary;
         
         return `
             <div class="document-item ${isSir ? 'is-sir' : ''}">
@@ -205,6 +206,16 @@ function renderDocuments(documents) {
                     ` : ''}
                 </div>
                 <div class="date">${escapeHtml(d.date || 'Date not specified')}</div>
+                ${hasSummary ? `
+                    <div style="margin-top: 10px; padding: 10px; background: #fff9e6; border-left: 3px solid #f39c12; border-radius: 4px;">
+                        <div style="font-weight: 600; color: #e67e22; margin-bottom: 6px; font-size: 0.9em;">
+                            📋 Summary
+                            ${d.sir_summary.violation === 'y' ? '<span style="color: #e74c3c; margin-left: 6px;">⚠️ Violation Substantiated</span>' : ''}
+                            ${d.sir_summary.violation === 'n' ? '<span style="color: #27ae60; margin-left: 6px;">✓ No Violation</span>' : ''}
+                        </div>
+                        <div style="font-size: 0.9em; line-height: 1.5; color: #555;">${escapeHtml(d.sir_summary.summary)}</div>
+                    </div>
+                ` : ''}
                 ${d.sha256 ? `
                     <div style="margin-top: 8px;">
                         <button class="view-document-btn" onclick="viewDocument('${d.sha256}', event)">
@@ -372,6 +383,22 @@ function showDocumentModal(docData, docMetadata) {
             <div><strong>Date Processed:</strong> ${escapeHtml(docData.dateprocessed)}</div>
             <div><strong>Total Pages:</strong> ${totalPages}</div>
         </div>
+        
+        ${docData.sir_summary && docData.sir_summary.summary ? `
+            <!-- SIR Summary Section -->
+            <div style="padding: 20px; background: #fffbf0; border-bottom: 2px solid #f39c12;">
+                <div style="margin-bottom: 15px;">
+                    <h3 style="margin: 0 0 10px 0; color: #e67e22; font-size: 1.1em;">
+                        📋 Special Investigation Report Summary
+                        ${docData.sir_summary.violation === 'y' ? '<span style="color: #e74c3c; margin-left: 8px; font-size: 0.9em;">⚠️ Violation Substantiated</span>' : ''}
+                        ${docData.sir_summary.violation === 'n' ? '<span style="color: #27ae60; margin-left: 8px; font-size: 0.9em;">✓ No Violation</span>' : ''}
+                    </h3>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f39c12; line-height: 1.6; color: #333;">
+                    ${escapeHtml(docData.sir_summary.summary)}
+                </div>
+            </div>
+        ` : ''}
         
         <!-- AI Query Section -->
         <div id="aiQuerySection" style="padding: 20px; background: #f8f9fa; border-bottom: 1px solid #ecf0f1;">

@@ -22,6 +22,30 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
+def load_sir_summaries(sir_summaries_csv: str) -> Dict[str, Dict]:
+    """Load SIR summaries CSV and create a lookup by SHA256."""
+    summaries_by_sha = {}
+    
+    if not sir_summaries_csv or not Path(sir_summaries_csv).exists():
+        logger.warning(f"SIR summaries CSV not found: {sir_summaries_csv}")
+        return summaries_by_sha
+    
+    with open(sir_summaries_csv, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sha256 = row.get('sha256', '').strip()
+            if not sha256:
+                continue
+            
+            summaries_by_sha[sha256] = {
+                'summary': row.get('response', ''),  # 'response' column contains the AI-generated summary text
+                'violation': row.get('violation', '')
+            }
+    
+    logger.info(f"Loaded {len(summaries_by_sha)} SIR summaries")
+    return summaries_by_sha
+
+
 def load_document_metadata(document_csv: str) -> Dict[str, Dict]:
     """Load document CSV and create a lookup by SHA256."""
     metadata_by_sha = {}
@@ -49,7 +73,7 @@ def load_document_metadata(document_csv: str) -> Dict[str, Dict]:
     return metadata_by_sha
 
 
-def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None) -> None:
+def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None, sir_summaries_csv: Optional[str] = None) -> None:
     """Export each parquet row to a separate JSON file."""
     parquet_path = Path(parquet_dir)
     output_path = Path(output_dir)
@@ -63,6 +87,9 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
     
     # Load document metadata if provided
     document_metadata = load_document_metadata(document_csv) if document_csv else {}
+    
+    # Load SIR summaries if provided
+    sir_summaries = load_sir_summaries(sir_summaries_csv) if sir_summaries_csv else {}
     
     # Find all parquet files
     parquet_files = list(parquet_path.glob("*.parquet"))
@@ -126,6 +153,14 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
                         'is_special_investigation': metadata['is_special_investigation']
                     }
                 
+                # Add SIR summary if available
+                if sha256 in sir_summaries:
+                    summary = sir_summaries[sha256]
+                    document['sir_summary'] = {
+                        'summary': summary['summary'],
+                        'violation': summary['violation']
+                    }
+                
                 # Write to individual JSON file
                 output_file = output_path / f"{sha256}.json"
                 with open(output_file, 'w', encoding='utf-8') as f:
@@ -167,6 +202,11 @@ def main():
         help="Path to document info CSV file for metadata (default: ../document_info.csv)"
     )
     parser.add_argument(
+        "--sir-summaries-csv",
+        default=str(script_dir / "../pdf_parsing/sir_summaries.csv"),
+        help="Path to SIR summaries CSV file (default: ../pdf_parsing/sir_summaries.csv)"
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose debug output"
@@ -180,7 +220,7 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     
-    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv)
+    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv, args.sir_summaries_csv)
 
 
 if __name__ == "__main__":
