@@ -374,8 +374,6 @@ def main():
             logger.info(f"  Duration: {result['duration_ms']/1000:.2f}s")
             if result['cost']:
                 logger.info(f"  Cost: ${result['cost']:.6f}")
-            if result['cache_discount']:
-                logger.info(f"  Cache Discount: ${result['cache_discount']:.6f}")
             logger.info(f"  Summary preview: {result['summary'][:150]}...")
             logger.info(f"  Violation: {result['violation']}")
             
@@ -392,7 +390,6 @@ def main():
                 'input_tokens': result['input_tokens'],
                 'output_tokens': result['output_tokens'],
                 'cost': result['cost'],
-                'cache_discount': result['cache_discount'],
                 'duration_ms': result['duration_ms']
             })
             
@@ -416,9 +413,9 @@ def main():
     file_exists = output_path.exists()
     
     with open(output_path, 'a', newline='', encoding='utf-8') as f:
-        fieldnames = ['sha256', 'agency_id', 'agency_name', 'document_title', 'date', 
+        fieldnames = ['sha256', 'agency_id', 'agency_name', 'document_title', 'date',
                      'query', 'response', 'violation',
-                     'input_tokens', 'output_tokens', 'cost', 'cache_discount', 'duration_ms']
+                     'input_tokens', 'output_tokens', 'cost', 'duration_ms']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         
         if not file_exists:
