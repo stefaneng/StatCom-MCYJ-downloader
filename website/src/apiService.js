@@ -28,7 +28,10 @@ export async function queryDeepSeek(apiKey, query, documentText) {
                     role: 'user',
                     content: fullPrompt
                 }
-            ]
+            ],
+            usage: {
+                include: true
+            }
         })
     });
 
@@ -48,11 +51,8 @@ export async function queryDeepSeek(apiKey, query, documentText) {
     const inputTokens = usage.prompt_tokens || 0;
     const outputTokens = usage.completion_tokens || 0;
     
-    // Try to extract cost if provided by OpenRouter
-    let cost = null;
-    if (data.cost) {
-        cost = data.cost;
-    }
+    // Extract cost from usage object (OpenRouter returns it here with usage accounting enabled)
+    const cost = usage.cost || null;
 
     return {
         response: aiResponse,

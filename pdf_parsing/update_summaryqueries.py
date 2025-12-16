@@ -185,7 +185,10 @@ def query_openrouter(api_key: str, query: str, document_text: str) -> Dict:
                 'role': 'user',
                 'content': full_prompt
             }
-        ]
+        ],
+        'usage': {
+            'include': True
+        }
     }
     
     response = requests.post(
@@ -211,8 +214,8 @@ def query_openrouter(api_key: str, query: str, document_text: str) -> Dict:
     input_tokens = usage.get('prompt_tokens', 0)
     output_tokens = usage.get('completion_tokens', 0)
     
-    # Try to extract cost if provided by OpenRouter
-    cost = data.get('cost', None)
+    # Extract cost from usage object (OpenRouter returns it here with usage accounting enabled)
+    cost = usage.get('cost', None)
     
     # Parse JSON response
     summary = ''
