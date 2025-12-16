@@ -37,7 +37,7 @@ MODEL = 'deepseek/deepseek-v3.2'  # DeepSeek v3.2
 
 # Query template for violation level classification
 # Document comes first with a common prefix to enable prompt caching
-QUERY_TEMPLATE = """Consider the following Special Investigation Report.
+QUERY_TEMPLATE = """Consider the following document.
 
 {document_text}
 
