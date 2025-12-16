@@ -20,3 +20,703 @@ Return ONLY the JSON object, no other text. Format:
 
 Return ONLY the JSON object, no other text. Format:
 {""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted after an allegation that a staff member at VISTA MARIA placed his hands around a youth's neck during a physical altercation on April 23, 2025. The investigation, which included interviews with staff, youths, and a review of video footage, found insufficient evidence to substantiate the choking allegation, concluding instead that the youth was the primary aggressor. The report's final determination states that no substantial violations were found and the facility is in compliance, effectively assigning no culpability to the staff or facility.",n,2379,121,,2495
+00574906d0905de4fe6761e6bf4eb7a5fe250e57900e96425010cbc911f29418,CI410201278,MAPLE LODGE GROUP HOME,Special Investigation Report #2025SIC0000087,"Special Investigation Intake Date: November 6, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following allegations that two residents, Youth A and Youth B, engaged in non-consensual sexual touching while under staff supervision in a group home dining area. The investigation found that two staff members were present and supervising at the time, but their attention was divided due to concerns about a potential vaping incident and administrative duties. Ultimately, the state concluded the facility was in compliance with staffing rules, as the staff were physically present and had a direct line of sight, and therefore no violation was established. Despite this finding, the report suggests staff supervision was inadequate as they were focused on paperwork and a secondary concern, which allowed the incident to occur unnoticed.",n,5525,145,,6784
+0061f513cd124d0e1510e79416aabe4b5c128b4dc99d10b7a38ee25fa4e1de37,CB280200990,Holy Cross Services - Northern Michigan CB,Special Investigation Report #2025SIC0000269,"Special Investigation Intake Date: January 6, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted after a report that a youth in foster care had not received her Independent Living stipend check and was unable to contact the agency. The investigation found the youth did eventually receive her check by contacting her assigned worker, and the youth later stated she had initially used the wrong contact number for the agency. The report concludes no policy violation was established. Overall, while there was a lapse in communication and a delayed check delivery around the holidays, the agency's ultimate response and the youth's access to a worker cleared them of formal culpability.",n,1470,123,,4846
+00a734fd316d634b72f233c11ba20eddc6b8e352963006f87a2a299b36cddadc,CI520345626,Great Lakes Recovery Centers,Special Investigation Report #2021C0116040,"August 17, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation found that at the Great Lakes Recovery Center for Youth, Youth A gave Youth C a hickey on the neck after both youths were in Youth C's bedroom, which was against facility rules. The incident occurred because Staff 1 left the youths unsupervised, violating the center's line-of-sight supervision policy. The facility is held responsible for the staff's failure to maintain proper supervision, resulting in a substantiated violation.",y,2519,98,,3991
+00bc1df0d8ed15b758ea4fb9f0675f52d2c0d97d88a9beb69e15f52e32070cc9,CI370377212,New Hope Youth Center,Special Investigation Report #2025SIC0000557,"Special Investigation Intake Date: April 14, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at the New Hope Youth Center was injured when another youth threw a plastic container at her face upon returning from an off-grounds trip, causing a laceration. The investigation found a sufficient number of staff were present, but it substantiated a failure to follow the facility's own supervision policy, as staff did not maintain line-of-sight supervision on the offending youth, which is a repeat violation. Management is directly culpable for this ongoing failure to enforce its written supervision procedures.",y,6498,108,,7253
+00c2b2403fdd7001e91fe327fc3c376f93e6e89efc7314ec7a03050ef124c452,CB410245705,Catholic Charities West Michigan,Special Investigation Report #2020C0103040,"October 1, 2020","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found that Catholic Charities West Michigan failed to properly monitor and document the medical condition of a youth (Youth A) in their care, who suffered significant health deterioration including weight loss, weakness, and pressure sores. The agency violated multiple licensing rules, with repeat violations in staff qualifications, service plan documentation, and case file management, indicating a pattern of non-compliance. The Foster Care Worker and agency oversight bear clear culpability for neglecting timely follow-up and accurate record-keeping, leading to the youth's unaddressed medical needs.",y,5461,123,,9671
+00fbc257a3b08b5d8d4935c3568565c8ec91f6fbb8379c689b4cc9d35190f5ff,CI731001543,Queen of Angels,Special Investigation Report #2024SIC0001705,"Special Investigation Intake Date: August 21, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation into Queen of Angels found multiple violations involving the improper restraint and treatment of a youth. Staff repeatedly pushed the youth, used an unsafe and disproportionate physical restraint without following protocol, failed to use de-escalation techniques, and did not document the incident. The investigation concluded that the facility and the staff involved, particularly Staff 3, were culpable for the violations.",y,4806,92,,4735
+00fdfbed71077510235122b3db80661578d75041081defaf73a65d8ca8f656b0,CP390201215,Michigan Department of Health and Human,Special Investigation Report #2022C0212013,"July 8, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}",A staff member at Kalamazoo County DHHS sent nude photos of herself to a foster youth with a cognitive impairment and had inappropriate contact. The facility was cited for violating staff qualification rules requiring staff to be suitable for their duties. The facility is held responsible for the employee's actions and must submit a corrective action plan.,y,4323,77,,4133
+010141b4052ab705742cd80a0fd3d7aff7e1e0d215001b2145092281fcdc4a98,CB410201266,SAMARITAS - WEST,Special Investigation Report #2024SIC0001271,"Special Investigation Intake Date: March 25, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth's financial stipend was withheld by Samaritas staff due to alleged program violations including positive drug tests, possession of a marijuana vape, and refusal to participate in life skills training. The investigation concluded the agency was in compliance, as withholding was allowed per the youth's signed agreements when not actively engaged in the program, and staff offered food assistance alternatives. No substantial violations were found, so no culpability is assigned to the facility.",n,2655,100,,5357
+0146c2410abd176761771d7c3b766531afc6110f17a34693aebebb1e30438d0b,CB630201423,Catholic Charities of Southeast Michigan,Special Investigation Report #2022C0420021,"July 8, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found that Catholic Charities of Southeast Michigan failed to submit adoption records to the state department within the required one-year timeframe after finalization, specifically identifying two children whose records were submitted over a year late and acknowledging a backlog of hundreds of unsubmitted records dating back years. The agency cited confusion over submission procedures and content requirements, but had not maintained compliance with the clear rule. The agency is directly culpable for the systemic failure to ensure timely submission of these permanent records as required by licensing rules.",y,2911,121,,3299
+0166fa6dc3f1f6f4c99f0e97227cccb1ac6e2dd0b116ea75faa65acf0851d6f7,CI790296492,VASSAR HOUSE,Special Investigation Report #2025SIC0000288,"Special Investigation Intake Date: January 14, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation addressed allegations of inadequate clothing and denied medical care at a youth facility. Investigators found the facility had sufficient clothing and proper procedures for both clothing requests and medical access, though documentation and policy clarity needed improvement. Youth A's clothing issue stemmed from a preference for a smaller size than recommended, and her medical care was delayed because she did not follow the correct request procedure, not due to staff refusal. Overall, no policy violations were substantiated, and culpability for the alleged failures was not found on the part of the facility.",n,2910,120,,2147
+0173b638c939a8483e9bafaa788ca2389923ff83d8df13b138773a70bd473429,CI820293953,LINCOLN CENTER,Special Investigation Report,"August 8, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at Lincoln Center gave a youth a book containing a marijuana edible, which the youth and another youth consumed, leading to hospitalization. Two other staff members were aware of the exchange but failed to report it, violating professional boundaries and supervision policies. The facility's administration is ultimately culpable for systemic failures in staff supervision and enforcement of policies that allowed this incident to occur.",y,2823,87,,3151
+017b705145b5b31eadc02273ca4b60479526af4f1bc64c85baee3533a75cc786,CE821001676,Wayne County Juvenile Detention Facility,Special Investigation Report #2025SIC0000963,Special Investigation Intake Date: 08/22/2025,"Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report details an investigation into multiple allegations at the Wayne County Juvenile Detention Facility, including staff failing to intervene in and laughing at youth fights, a youth being threatened with restraint, and general staff disrespect. The investigation, which included interviews and video review, found that staff responded appropriately to altercations, did not laugh or encourage fights, and did not make threats. The allegations were not substantiated by the evidence. The investigation concluded the facility was in compliance with all rules, assigning no culpability to the staff for the reported incidents.",n,4671,128,,4358
+0193d029cf683f3132f497aa44e919c11c5abac873aac71fc0dc758328531f5d,CI330201171,"Highfields, Inc.",Special Investigation Report #2021C0103033,"October 12, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following a reported restraint of a youth at Highfields, Inc. The central allegation that staff performed a restraint due solely to property destruction was not substantiated, as the investigator concluded the restraint was initiated to prevent imminent harm. However, the investigation revealed significant additional violations: staff escalated the situation through agitated behavior, conducted the restraint in an unsafe location, and used a prohibited prone restraint technique with a staff member lying on top of the youth. Overall, the facility and its staff are culpable for unsafe restraint practices and failure to follow approved procedures.",y,3723,124,,7244
+01a86562abb2868595f3967f48edecf9cf67396862c7bdc0c2259a4e39367cb4,CI820201513,WOLVERINE CENTER,Special Investigation Report #2024C0001082SI,"March 12, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report details an investigation into multiple allegations at Wolverine Center, a child caring institution. Several allegations, including inadequate heating, lack of cleaning supplies, verbal abuse, and delayed medical care, were not substantiated. However, the investigation did substantiate three violations: a staff member used a prohibited martial arts chokehold on a youth, the facility operated out of its required staff-to-youth ratio for a period, and staff failed to write incident reports as required by internal policy. The culpability lies primarily with the facility's staff and supervision, as evidenced by the use of prohibited physical intervention and failures in procedural compliance.",y,8090,135,,7676
+01bc5c4ed0bd8e948889c39ba7a21973fd30e130e7c0b4ab192947a2b251acfc,CI790363049,CLARENCE FISCHER CENTER,Special Investigation Report #2024SIC0001255,"Special Investigation Intake Date: March 19, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Clarence Fischer Center attempted to walk off-site, leading to a physical altercation with staff. During multiple attempts to restrain the youth, Staff 2 forcefully picked him up and slammed him to the ground, causing the youth pain and requiring a hospital evaluation. The facility was found in noncompliance with rules prohibiting physical punishment, and this was a repeat violation. The investigation substantiates that Staff 2 bears direct culpability for using prohibited, excessive force.",y,4824,104,,5627
+01bec58fa482adf1a1f12a325ccf9b850e980fbe0ebd27da957eedb7f271b91a,CI820201513,WOLVERINE CENTER,Special Investigation Report #2024SIC0001737,"Special Investigation Intake Date: September 5, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation was conducted into allegations that a supervisor at a youth facility struck two residents, caused injuries, and used threats and blind spots to avoid detection. The investigation included interviews with multiple youths, staff, and administrators, as well as reviews of video footage and incident reports. The investigation found that the accused supervisor was not working at the times of the alleged incidents, no other witnesses corroborated the claims, and the documented injuries were attributed to other causes like fights between youth. Based on the evidence, the allegations were not substantiated, and the facility was found in compliance; therefore, the accused supervisor is not deemed culpable based on this report's findings.",n,5716,142,,6485
+01c84e428b5a3beb5f57e925151bbae96755eecedd39d9ecea59bf81abf09be1,CI820201487,Sisters of Good Shepherd,Special Investigation Report #2021C0207028,"October 15, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found that while the specific allegations of staff pushing a youth and making verbally abusive comments were not substantiated by video evidence or witness accounts, a violation was established because a staff member improperly restrained a youth by using a single-person hold not permitted under the facility's approved Crisis Prevention Institute (CPI) physical management model. The facility was found non-compliant with restraint policies and is required to submit a corrective action plan. The report concludes that the facility, not an individual staff member, is culpable for the policy violation related to improper restraint technique.",y,4257,123,,3139
+01f8dec51b4a8320bb011ee6ec1713866944aae49b2808e0eefb59a52fc915bf,CI250201313,Whaley Children's Center,Special Investigation Report #2023C0217003,"December 27, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","On October 16, 2022, at the Mott Children's Residence, two youth engaged in sexual intercourse after one propped open his door and the other stuffed her bed to appear present, with staff discovering them only after a tip from another youth. The investigation substantiated multiple violations, including failure to conduct required visual bed checks every 15 minutes, failure to follow bedtime supervision policies, and concerns about a staff member's qualifications. Culpability lies with the facility for systemic supervision failures, as evidenced by repeated lapses in monitoring and a prior similar violation.",y,4962,125,,5660
+02043f9d3d70a196521621518704871cc3c19c42f20f2df8238d0cec84b01cdf,CI820201294,METHODIST CHILDREN'S HOME,Special Investigation Report #2025SIC0000522,"Special Investigation Intake Date: April 2, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following an allegation that a youth, referred to as Youth A, was sexually abused by a peer at the Methodist Children's Home several years prior. The investigation found insufficient evidence to substantiate the claims, as the youth declined to provide specific details or names, current staff had no recollection of such incidents, and a review of records from the time period showed no reports of Youth A as a victim. Given the lack of corroborating evidence and the explicit conclusion of the state investigator, no policy or code violations were established against the facility.",n,1654,123,,7462
+022d298e7e95f8f2aa063c8b20c65acedb98f96303771e8b52e97bab169a313a,CE821001676,Wayne County Juvenile Detention Center,Special Investigation Report #2025SIC0000088,"Special Investigation Intake Date: November 7, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation involved allegations that a youth (Youth B) sexually harassed and assaulted other residents at the Wayne County Juvenile Detention Center. While the primary allegation of insufficient staff to protect residents was not substantiated, as staff were found to be actively redirecting and supervising Youth B (including using a 1:1 ratio), a procedural violation was substantiated. The facility failed to properly resolve grievances, issuing letters stating grievances were 'resolved' merely because they were forwarded to a sheriff's unit for investigation, without addressing the immediate safety concerns or final outcome. The facility is culpable for this administrative failure in its grievance process.",y,3561,137,,6982
+02337350f46dbc82ed172939f9684c9c698ec624ad4ea21f436459cb629c3c22,CI670414130,Osceola Youth Center,Special Investigation Report #2024SIC0001468,"Special Investigation Intake Date: May 28, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Osceola Youth Center engaged in multiple self-harm incidents and made suicidal statements. The facility's staff and clinical director responded each time by assessing the youth, providing medical care, placing her on heightened observation, and, when necessary, sending her to the hospital for evaluation. The report concludes the agency followed its internal policies and procedures appropriately in response to the youth's needs. The investigation found no violation, and no culpability is assigned to the facility as their actions were deemed compliant.",n,4098,111,,5930
+025766ab9f979488ee552a09798b60f6c40e37738a8537477d31007d9177a88c,CI820201513,Wolverine Center,Special Investigation Report #2025SIC0000584,"Special Investigation Intake Date: April 22, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An altercation occurred at the Wolverine Center where Youth A was assaulted by Youth B and Youth C, leading Youth A to defend himself with a broomstick. Staff intervened but video evidence showed improper restraint by Staff 2 on Youth C and Staff 4 shoving Youth B. The facility was found in compliance regarding sufficiency of staff but violated intervention standards and restraint policies, with multiple repeat violations. Culpability lies with the facility for failing to enforce proper restraint procedures despite prior corrective actions.",y,5142,115,,8137
+0265d63a41522919d872b215741f9611caed4b8221f65e3b5b6f6bcfc1e315ee,CI670290163,EAGLE VILLAGE GERBER-PUTNAM,Special Investigation Report #2024C0001019SI,"January 18, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Eagle Village Gerber-Putnam facility started a fire in an empty bedroom on December 31, 2023, using a lighter brought back from a home visit, while other youth were present and staff were supervising. The investigation concluded that staff followed procedures, conducted proper searches, maintained appropriate supervision, and responded appropriately to the emergency. The report determined that staff were not aware of the youth's plan to start the fire and did not violate supervision policies. Ultimately, the facility was found in compliance with all applicable licensing rules, with the primary culpability falling on the youth who intentionally started the fire.",n,3482,143,,8037
+0267ec42e51d91adc53c433ac0a2a162dc6f164aaac6a33eb8d4dd12b6fe8373,CI820201294,METHODIST CHILDREN'S HOME,Special Investigation Report #2024C0001052SI,"February 21, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was initiated after a youth was reported to have bruises from a restraint. The investigation found that staff used a brief physical restraint on a youth who was harming himself during a behavioral escalation after an event. Video evidence, interviews, and documentation confirmed the restraint was a last-resort response to prevent self-injury, aligning with emergency protocols, and the youth's bruise was attributed to a separate fight with another youth. The facility was found in compliance with rules, and no policy violations were substantiated, effectively clearing the staff and facility of culpability for the alleged improper restraint.",n,2680,128,,5638
+0268929038bead62553d140db5d9f7e59a47937c9d402d048fab33b5d28854d8,CI820293953,LINCOLN CENTER,Special Investigation Report #2025SIC0000259,"Special Investigation Intake Date: January 3, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}",,,8763,0,,1364
+02a24955477e62d08166855a9d1ada31b8879362cf9567f0e7ba8a6d335441e2,CS210200969,BAY PINES CENTER,Special Investigation Report #2023C0000562,"July 28, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}",,,3137,0,,1206
+02c6a5e4ae3b75814ec5cccbc492a69cd022ff8698768f8b7c54d6292282b831,CI820201008,CALUMET CENTER,Special Investigation Report #2024SIC0001635,"Special Investigation Intake Date: July 31, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An anonymous complaint alleged that a youth at the Calumet Center could pop his bedroom lock and exit, creating safety concerns. The state investigation involved multiple interviews and document reviews, finding no evidence to support the lock-popping claim, though it confirmed the youth had recent aggressive incidents resulting in property damage. Based on witness statements, facility policies, and a recent locksmith inspection showing minor maintenance, the investigator concluded the violation was not established, effectively clearing the facility of the specific allegation.",n,2215,108,,2762
+02d6ca5dcec90c742d07d4d770077c35e11fdac9ae139c5d56c7e20ec9e17ece,CB410201260,WELLSPRING LUTHERAN SERVICES,Special Investigation Report,"February 2, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","Wellspring Lutheran Services opened a satellite office in Norton Shores for staff work and parent visitations without obtaining prior written approval from the Department of Child Welfare Licensing, violating state rules. The agency claimed confusion over what constituted a satellite office and intended to notify the department once setup was complete. Culpability lies with the agency for failing to understand and comply with clear regulatory requirements for notification and approval.",y,1242,91,,2158
+02fcbcbf2112d5596f5966669b159171b9479c5a9a678835eca0c073bb8b87eb,CB500316267,Family & Community Services Inc,Special Investigation Report #2022C0444012,"June 7, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A Michigan child placing agency failed to notify a biological parent of her child's urgent medical visit and a scheduled dental appointment, violating rules requiring parental involvement in healthcare decisions. The failures stemmed from outdated contact information in the state database and a lack of timely communication from both the foster parent and the agency's caseworker. The investigation concluded the agency is ultimately responsible for ensuring proper notification, establishing a clear violation of policy.",y,3076,94,,4600
+030a5e161e487ad277a5a84af86183d148ed43747126ef2636b76f795f211eff,CI410268882,D.A.R.T.,Special Investigation Report #2024SIC0001685,"Special Investigation Intake Date: August 15, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted after allegations that a staff member (Staff 1) told a youth to 'get the fuck away from me.' The investigation, which included interviews with multiple staff and youth, found that no one could substantiate the claim of swearing, and the youth who made the allegation later revised their account. The agency's policies clearly prohibit such verbal abuse, but the investigators concluded the violation was not established. While the specific allegation was not proven, the report highlights a pattern of concerning interactions and prior incidents involving staff conduct at the facility.",n,2591,123,,20256
+03dcc08551d95123efcb7130e84dcca3baf4cffdd2bace0000306b56e232f170,CB730200994,Holy Cross Children's Services -Mid-Michigan,Special Investigation Report #2025SIC0000518,"Special Investigation Intake Date: April 1, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted based on allegations of bugs and a broken refrigerator at Holy Cross Children's Services – Mid-Michigan. The investigation found the freezer had been promptly repaired, pest control was regularly serviced, and the facility was maintained appropriately, with no violations established. The investigation concluded the facility was in full compliance with licensing requirements, and the allegations were not substantiated.",n,1520,92,,4232
+03f359b645bf456c4c91482bc62b1681ae547d49880600a84aebfa54feff384c,CB410201088,DA BLODGETT FOR CHILDREN,Special Investigation Report #2025SIC0000133,"Special Investigation Intake Date: November 21, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into allegations that a staff member (Staff 2) at a childcare facility took a youth (Youth A) to the staff member's residence for drinking and drug use, and facilitated shoplifting. The investigation, which included interviews with staff and a complainant, found the allegations to be unfounded, as the accused staff member denied them, no corroborating evidence was found, and the youth making the claim refused to be interviewed and later recanted. The report concludes no policy violations were established, assigning no culpability to the staff member or the facility.",n,1989,127,,6752
+03f84c22513c494f2a1ee498ff4e7b33756985587fffeb892d2c49b42b1dcf6f,CI670290156,EAGLE VILLAGE ASHMUN-SHERK,Special Investigation Report #2025SIC0000296,"Special Investigation Intake Date: January 16, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation into allegations of physical abuse and verbal abuse at Eagle Village, a child caring institution, found the claims to be unsubstantiated. The report examined claims that a youth was dragged by staff and that staff used racial slurs and derogatory language, but witness accounts were contradictory, video evidence was unavailable or did not support the claims, and the facility's documented policies were deemed adequate. Ultimately, the state investigator concluded the facility was in compliance with all rules, placing responsibility for the unproven allegations on inconsistent and uncorroborated reporting rather than on the facility or its staff.",n,3662,129,,7729
+0453d1af31428435e3c7626952a4fa5ae530136d03d91680cbc9457a8c024698,CI410201464,THE BRIDGE FOR RUNAWAYS,Special Investigation Report #2025SIC0000925,Special Investigation Intake Date: 08/11/2025,"Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","On August 7, 2025, a youth (Youth A) reported being sexually assaulted in her bedroom at The Bridge for Runaways by another youth (Youth B) during the early morning waking hours. The investigation substantiated that Staff 1, who was the sole staff on duty, failed to perform required 15-minute variable interval room checks, did not properly supervise the bathroom hallway as per policy, and left the facility out of ratio (1:9 instead of the required 1:4) by dismissing overnight staff early. While the assault is a criminal matter between residents, the facility and Staff 1 are culpable for the critical supervisory failures that created the unsafe environment in which the assault occurred.",y,3821,155,,5675
+045ed578fce5f1ed7cb6af6aefec9a4e6ae6caded897380f6d0fb39b9bd8aa4b,CI520283194,CEDAR CREEK TEACHING FAMILY HOME,Special Investigation Report #2024C0001084SI,"February 6, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report details a special investigation at Cedar Creek Teaching Family Home, substantiating that a staff member left two youth unsupervised for several minutes, during which they engaged in physical sexual contact. It also found failures in supervising a youth's use of technology, contrary to specific policies and safety plans for that youth. The facility and the staff member, who received verbal reprimand, share culpability for the supervision failures.",y,6770,94,,5018
+048e46b82e5249f2e60e45e7d1dc62454988cf1963ae6644af50169a705540c6,CB280200990,Holy Cross Services - Northern Michigan CB,Special Investigation Report #2025SIC0000950,Special Investigation Intake Date: 08/19/2025,"Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found Holy Cross Services violated staffing and policy rules after three staff abruptly quit. A remaining worker was assigned up to 22 foster care cases, exceeding the 15-case limit, and a former worker improperly shared confidential foster home information with a competing agency. While the crisis was triggered by staff resignations, the agency is culpable for inadequate succession planning and failing to prevent the unauthorized data disclosure.",y,3173,91,,5248
+04a61e2fc068f4731192c674a370c1feda4feb43f0fa8267f496a1329e190536,CB810201161,Hands Across the Water,Special Investigation Report,"February 2, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report investigated two allegations against Hands Across the Water: that a foster care worker left youth unsupervised in a cold vehicle, and that the agency refused to involve parents in treatment plans. The investigation found no evidence to support the vehicle allegation, as interviews and documentation confirmed a caregiver was present during all transports. Regarding parent involvement, documentation showed the biological mother was offered the treatment plan but refused to sign it, though she did attend meetings and parenting time. The investigation concluded no violations were established for either allegation, effectively clearing the agency of culpability.",n,2680,119,,11849
+05313e24de5c597bb90fd604321456ef5fd36cf815e9b18d55ba09cc244535ad,CB250296641,SAMARITAS - BAY,Special Investigation Report,"April 6, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member (Staff 3) at a Samaritas independent living home in Flint assisted a 17-year-old youth (Youth A) to run away by driving her to a bus station, helped her evade surveillance cameras, and later attempted to bribe another youth to keep quiet. The investigation also substantiated that Staff 3 repeatedly purchased cigarettes, vape pens, alcohol, and marijuana for multiple youths in the home. The agency itself was found non-compliant for failing to follow its own supervision policies, including staff not conducting required room checks and not reporting when youths were taken off-site. The evidence clearly shows Staff 3 was primarily culpable for the direct harm and violations, while agency management shares blame for inadequate oversight and procedural failures.",y,11337,161,,8775
+0548e0ed2193286be90b4c616d727b3ec295a14d4cd867d0352e00d782f187a8,CI630412886,GLEN GROVE,Special Investigation Report #2024SIC0001494,"Special Investigation Intake Date: June 7, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation concerned allegations that a youth with significant medical needs was not fed according to his prescribed diet and was transported to school in soiled briefs. While the malnutrition allegation was not substantiated, investigators established a violation for personal hygiene because a staff member admitted to failing to check or change the youth's briefs before transport, breaching the facility's care plan. The facility's administration bears culpability for this lapse in supervised care, as it indicates a failure in staff training or protocol adherence for a youth requiring 1:1 supervision.",y,2733,120,,4844
+055f59c6b2c04de7f7a5ebaa465ffc29cfc3e09f05cc9ae5b1c348ef478dc40d,CI820293953,LINCOLN CENTER,Special Investigation Report #2025SIC0000059,"Special Investigation Intake Date: October 28, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A Special Investigation was initiated following an allegation that a youth was sexually assaulted by two other youths in his room at the Lincoln Center facility. The investigation, involving interviews with staff, multiple youths, and the alleged victim, found that while an altercation involving horseplay and an attempt to pull down the youth's shorts did occur, staff intervened within seconds and the evidence was insufficient to substantiate the claims of sexual assault or a lack of supervision. Given the immediate staff intervention and the investigative conclusion, primary culpability for a serious assault was not established, though the incident highlights ongoing behavioral risks within the facility.",n,2432,132,,4940
+056885a5f036de3772c5a66daba38ead7d8af5e4d8d6c784d1dbebd82c2cb08c,CB630369213,CHILD SAFE MICHIGAN JUDSON CS,Special Investigation Report #2025SIC0000078,"Special Investigation Intake Date: November 4, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into Child Safe Michigan Judson CS following allegations from a birth mother. The investigation covered three areas: failure to establish visitation and explore relative placements, failure to report suspected maltreatment, and failure to perform a trauma assessment while delaying relative placement. The investigation found that the agency had initiated visitation, was actively assessing a relative placement (children were placed with a godmother/fictive kin), and had no basis to report suspected maltreatment after a medical examination concluded a diaper rash was present, not abuse. The agency appropriately responded to the birth mother's concerns by taking the child for a medical exam and moving the children to a respite home due to safety concerns stemming from the birth mother's behavior and discovered AirTags, not due to suspected foster parent maltreatment. The evidence did not support any of the allegations, and no violations were established. The agency acted properly and was not found culpable for any wrongdoing.",n,6850,198,,8766
+0598508ca51ec76947c612419a9c5dd4014ba91d54f315652480f6c60e3ec862,CM500338959,SAFEHAUS TOO,Special Investigation Report #2024C0001075SI,"January 26, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Safehaus Too expressed suicidal thoughts to a nurse prior to discharge, but clinical documentation from the day before indicated he was at baseline with denied suicidal ideation. Upon discharge to his mother, the youth refused to go, the mother left, and the youth threatened suicide to a CPS screener; the facility's Clinical Director, via phone, convinced the mother to return and verbally advised her to take him to the ER if he made suicidal threats, which she eventually did after a delay, leading to his psychiatric hospitalization. While the report concludes no licensing violation was established, the facility's discharge process and communication with the guardian failed to ensure immediate safety for a youth expressing acute risk.",n,1989,149,,8642
+05a298bbfe4158f3c91cdc065e2fb6bf0104ade263b0f80e17fd528f06421044,CI820201008,CALUMET CENTER,Special Investigation Report #2024SIC0001776,"Special Investigation Intake Date: September 18, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at the Calumet Center juvenile facility struck a youth in the back of the head during a physical altercation on September 15, 2024. The incident began when the agitated youth ran inside, threatened the staff member, and swung at him, with reports indicating the youth struck the staff member first; the staff member admitted he overreacted and should have walked away. The investigation, which included interviews and video review, substantiated that the staff member hit the youth, constituting a violation of rules prohibiting physical punishment. Culpability lies primarily with Staff 1 for his retaliatory action, though the facility also bears responsibility as this was a repeat violation, indicating a failure to ensure compliance with behavior intervention policies.",y,2825,158,,8354
+05a510399afff34ae4d909311e39e8313ab1fcdc60dd7f273b785f1ff7560687,CI670414130,Osceola Youth Center,Special Investigation Report #2025SIC0000763,"Special Investigation Intake Date: June 4, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth tested positive for marijuana upon arriving at a new placement after being discharged from Osceola Youth Center. An investigation, including interviews with the youth, other residents, staff, and leadership, found no evidence that the youth obtained or used marijuana while at the facility, concluding the positive test likely stemmed from her admitted daily use prior to placement. No substantiated culpability lies with the facility, as the investigation did not support the allegation that staff or youth provided marijuana or that use occurred on-site.",n,1574,113,,6001
+0606466adcad96b39e6e4e1f8d53bd0226f0c896cfdbf0dcd424f4171ac5f878,CP690201347,Otsego/Crawford/Oscoda DHHS,Special Investigation Report,"December 7, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","Foster parents alleged that the agency failed to fully disclose a foster child's history and diagnoses prior to placement, specifically raising concerns about undisclosed prenatal substance exposure. The agency conducted an investigation involving multiple interviews and a review of documentation, which showed that meetings, emails, and visits had occurred, and that a specific diagnosis had been ruled out. The investigator concluded the agency was in compliance and provided all relevant information. Ultimately, the report found the agency not at fault, determining no violation of the rules occurred.",n,5689,113,,9757
+0625703ed81e420185a78baa710ddf9d0d36aa6dce8deb269cb92270d0c2397e,CP470201250,LIVINGSTON COUNTY DHHS,Special Investigation Report #2025SIC0000684,"Special Investigation Intake Date: May 12, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following allegations by a foster parent that Livingston County DHHS falsified court reports, withheld necessary medical care for a youth, and excluded the foster parent from service planning. The investigation found that DHHS was not managing the case during the period in question, as it was under a private agency's supervision, and thus did not write the contested court reports or service plans. Regarding medical care, DHHS appealed a referee's medication order due to policy requiring birth parent consent, which a judge later upheld, but the subsequent delay in treatment was primarily attributed to hospital discharge protocols and legal processes. Ultimately, no violations of licensing rules were substantiated against the agency.",n,7144,147,,8103
+063bb0491a1951c5d023cd381728f0942fcfc971c120529c4f6f29fd86dcb805,CB390201118,Family & Children Services,Special Investigation Report #2022C0112006,"April 12, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation was conducted into complaints against Family & Children Services Inc. regarding services to a parent, notification of court hearings, reasons for moving children, and makeup visits. Three allegations were unsubstantiated, but the agency was found to have violated policy by failing to ensure required makeup visits occurred after cancellations by the agency or foster family. Ultimately, while most claims were not supported, the agency's failure to provide required makeup visits and its internal policy that conflicted with state requirements establish clear responsibility for this violation.",y,6026,114,,8542
+06618c6d99c4a92dd8bfac16708b09539128e2fe219791fbbd198d943d303973,CM500338959,Safehaus Inc.,Special Investigation Report #2022C0108025,"July 06, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A 2022 investigation at Safehaus Too, a child therapeutic group home, substantiated that on June 13th, two youth engaged in sexual activity in a bathroom while under staff supervision. The facility failed to provide continuous, adequate supervision, with staff performing room checks at fixed intervals instead of variable ones as required. The facility is culpable for inadequate supervision protocols and staff performance, leading to the incident and subsequent youth discharges, while a secondary allegation of improper medication dispensing was not substantiated.",y,3290,111,,5913
+067d2dd622628dc2a1a6a9b305396d28b1654cd3fc58fe926c6fa692c513b870,CI410409653,SAMARITAS SHELTER GRAND RAPIDS,Special Investigation Report #2024SIC0001245,"Special Investigation Intake Date: March 14, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A state investigation of the Samaritas Shelter in Grand Rapids substantiated two violations: a staff member falsified bed check times on daily logs, and the facility was out of state-mandated staff-to-youth ratio on multiple occasions, with a team lead directing or allowing these ratio breaches. The report concludes that Staff 2, the team lead, bears significant responsibility for the violations, having instructed staff to falsify documentation and having created or permitted multiple instances of being out of ratio.",y,7140,109,,6871
+069914961a22a50b8aa25419d5fed73745cd9086253f38c11b784928e13a8043,CI790363049,CLARENCE FISCHER CENTER,Special Investigation Report #2024SIC0001720,"Special Investigation Intake Date: August 28, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An anonymous complaint alleged an unsafe environment at the Clarence Fischer Center, citing youth-on-youth assaults, potential weapon use, and a serious incident where multiple youths left their units unsupervised overnight. A thorough investigation involving interviews, document reviews, and video footage concluded that staff consistently intervened in fights, followed established protocols, and made reasonable efforts to supervise youths, leading to no substantiated violations. The report explicitly states 'No substantial violations were found' and places the facility in compliance with all rules, effectively clearing the facility and its staff of culpability for the alleged incidents.",n,8264,123,,9620
+069e1cafdba5b1ada8419683fbd5c25828606eb901216c4c08d0ff33a35fd0ea,CE821001676,Wayne County Juvenile Detention Center,Special Investigation Report #2024SIC0001797,"Special Investigation Intake Date: September 25, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation found that a youth with a documented history of ingesting objects was able to access and swallow a battery from a broken remote control discarded in a garbage can. The facility was found in non-compliance for failing to provide a mandated 1:1 staff ratio for the youth at the time of the incident, and for a repeat violation of not filing an incident report by the end of the shift. While staff attempted redirection, the failure to maintain the required supervision ratio directly contributed to the incident, indicating facility culpability.",y,4316,118,,3013
+06b1569ef2858226bcdd21d5bba3273dad0507ab35cc51f941665f4c01e27a20,CI410337023,WEST CAMPUS,Special Investigation Report #2024C0001001SI,"January 9, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member took two youths to a public library. Following a conflict over seating, one youth went to the bathroom. The staff member, believing the youth had left the building, did not search the bathroom and, following a supervisor's instruction, departed with the second youth to return her to the facility, leaving the first youth unattended for 10-15 minutes. The staff member later returned with police and retrieved the youth. The investigation concluded the facility violated its own policies regarding line-of-sight supervision, diligent search for missing youths, and accompaniment to public restrooms. Primary culpability lies with Staff 1 for failing to supervise and search properly, but supervisory and policy communication failures also contributed.",y,6255,152,,8320
+06d739f2e71b954c305b20f8e69a5ad0520f8ffc1c25fcadf83d771e27061b01,CI410298928,EAST CAMPUS,Special Investigation Report #2024SIC0001467,"Special Investigation Intake Date: May 28, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at a youth residential facility took two youths to a movie theater and left them unsupervised for 10-30 minutes to take a personal emergency phone call, instructing one youth to watch the other. The facility's policies require constant line-of-sight supervision of youth during activities. This is a repeat violation of supervision rules. The staff member is directly culpable for the violation, as they knowingly disregarded established safety protocols.",y,1998,98,,2723
+072418ba0965ce7ce804fb9e3067a7f23b1e56aa41bf546b23a241637c7622e2,CP380201203,Jackson County DHHS,Special Investigation Report #2025SIC0000458,"Special Investigation Intake Date: March 11, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found that Jackson County DHHS failed to properly evaluate a foster home incident where a foster parent threw a camera that struck an adopted youth during a dispute, leading to a physical altercation. The agency's special evaluation report documented the facts, including the foster parent admitting to throwing the camera, but incorrectly concluded no licensing rule violation had occurred, despite the evidence warranting a citation. The agency is held culpable for noncompliance due to its failure to recommend appropriate licensing action consistent with the documented facts.",y,3091,113,,5745
+07414c24d0fece2aede762ec1849654641589c6f9468150f02ccc2670279b67a,CB820201177,HOMES FOR BLACK CHILDREN,Special Investigation Report,"March 13, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A Special Investigation Report for Homes for Black Children substantiated that an Adoption Worker (AW) failed to report allegations of sexual abuse. The AW was informed by the alleged perpetrator (a foster/adoptive parent) that a youth had accused him of sexual abuse, and she instructed the parent to call in the report himself but did not make the mandatory report to Centralized Intake or notify her supervisor. The investigation concluded the agency violated its policy and state law requiring immediate reporting. The AW bears direct culpability for the violation, having admitted she knew the protocol but failed to follow it due to being off-duty and ill at the time of the call.",y,2451,141,,6460
+07475fc062c476cc5b0636b52e6bf4a07e0b96fba7456648ada3856516ad27f4,CP500201269,MACOMB COUNTY DHHS,Special Investigation Report #2025SIC0000894,"Special Investigation Intake Date: July 29, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation examined allegations against a county child welfare agency regarding a youth's hospital discharge and medication. The first allegation, that a foster care worker threw away the youth's medication, was not substantiated; interviews and case file review showed the worker obtained the necessary prescriptions and the youth did not go without vital medication. The second allegation, that the agency failed to timely pick up the youth from the hospital, was also not substantiated; the investigation found the agency actively searched for a placement for over a week and ultimately secured one on the scheduled discharge date, though it occurred later in the evening. The report's conclusion that no substantial violations were found indicates the agency's actions, while challenging and delayed, did not rise to the level of a licensing rule violation.",n,3148,163,,14673
+07512464191a03424859773836b75719ed7d8139b9a77f4221408a7e6791be5e,CI670414130,Osceola Youth Center,Special Investigation Report #2024SIC0001561,"Special Investigation Intake Date: July 5, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found no definitive evidence that a staff member intentionally 'body-slammed' a youth during an altercation, as accounts differed on whether it was an attempted restraint that resulted in a fall. However, multiple witnesses, including other staff, confirmed that the staff member escalated the situation by approaching the youth in an aggressive manner and failing to use proper de-escalation techniques, which violated the facility's required policies and procedures. Therefore, while the facility was found compliant on the physical intervention allegation, it was found non-compliant for failing to follow its own program statement policies regarding care and supervision. The agency is culpable for a violation due to a staff member's inappropriate conduct that contravened established de-escalation protocols, necessitating a corrective action plan.",y,4500,171,,7813
+075c04e878e3f004be843473ad5c6580e9f5ecebe2e8815ccb9355589684122b,CI820294390,Vista Maria,Special Investigation Report #2024SIC0001551,"Special Investigation Intake Date: July 1, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth, Youth A, became upset while trying to make a phone call and struck a staff member, Staff 1, in the head with a plastic bag containing bottles. Staff 1 retaliated by punching Youth A in the face, an act confirmed by witness interviews and video footage. Staff 1 was immediately removed, placed on leave, and later terminated. While the youth initiated physical contact, primary culpability lies with Staff 1 for the unprofessional and prohibited retaliatory strike.",y,3024,110,,5658
+079c9f3bfcb4c6e67dc857d7e08601ab431f63234daf50beaa6ea933c58ae23d,CP820201495,WAYNE COUNTY DHHS - NORTHCENTRAL,Special Investigation Report,"April 10, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The Wayne County DHHS placed four children in fictive kin homes without required court approval, violating placement rules. The court discovered the unauthorized placements during a hearing, leading to an initial order to remove the children, which the agency appealed and later obtained retroactive approval. The agency's failure to secure prior court authorization and its internal miscommunication regarding the placements' legitimacy constituted a clear violation of procedure, with primary culpability lying with the agency for not following proper approval protocols.",y,2102,109,,15920
+07b6bdf775adaf7c7fc607885d59250cfdf869fa06f5bafb22655bb75498738d,CM390403910,Pine Way Group,Special Investigation Report #2022C0214023,"June 8, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation concerned serious allegations against the manager of Pine Way Group South, including soliciting an assault on a youth and destroying a youth's room, along with complaints about food provision. The primary allegations of abuse and food issues were not substantiated by witness interviews or physical evidence, though some staff statements contradicted the administrator's denials. However, a review of Youth A's service plan revealed it lacked required components. Given the unsubstantiated, yet concerning, abuse claims and the clear documentation failure, administrative oversight appears more culpable than direct abuse in this instance.",y,4257,125,,5907
+07b9d62820dead7743cd1bbe7df5a026e35ebf8a8e50849c873ed17ac0230d92,CI820201513,Wolverine Center,Special Investigation Report #2024SIC0001650,"Special Investigation Intake Date: August 2, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted at the Wolverine Center following allegations that a youth (Youth A) was physically abused by staff and sustained bruises and a swollen face. The investigation, which included interviews and document reviews, found no evidence to substantiate the claims of physical punishment or improper intervention by staff. However, the investigation did confirm that the facility failed to ensure the youth's safety and protection when a supervisor denied him re-entry to the building after an AWOL incident because he was wearing a ski mask, which was deemed 'contraband' despite no policy defining that term. While the facility was cleared of the abuse allegations, the report places culpability for the safety violation squarely on the agency for its failure to have and follow clear policies regarding re-admission and contraband.",y,5707,167,,16314
+07dd36c694fdd236a0631da6764ebe4bf9ff4c6d1a06b4d9ce1f4e2a71dd7ecb,CP170201061,Chippewa/Luce/Mackinac County DHHS,Special Investigation Report,"October 1, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following allegations that the Chippewa/Luce/Mackinac County DHHS failed to follow required visitation policies for eight siblings in foster care and their mother from June 2022 onward. The investigation, which reviewed case history, interviewed the complainant and the foster care worker, and examined documentation, found numerous documented sibling and parental visits and noted that the court had ordered less frequent visits than policy due to the large number of children and significant geographical distances between placements. The report concludes no violations of licensing rules were established. Although the agency faced logistical challenges, the investigation found it complied with the relevant rule and internal policy regarding visitation.",n,2896,142,,7015
+080117fec9197e657c21a7af6cc8417eda7fe6b8588377fb73e6ec48bc834de2,CI480201234,LAKES AREA TEACH FAMILY HOME,Special Investigation Report #2024SIC0001618,"Special Investigation Intake Date: July 24, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at the facility punched a picture frame, cutting his hand, after an escalation over an MP3 player. Law enforcement responded, and a deputy voluntarily took the youth to the hospital for hand treatment, but the youth did not receive a mental health evaluation as staff and law enforcement did not deem him to be in crisis. The report found the facility violated policy because the Group Home Supervisor sent unprofessional and inaccurate emails out of frustration, including claims about lacking staff and resources, which breached internal conduct and communication standards.",y,5539,123,,4826
+085eac14507923a2f17976e261c228f16e5443e9b614880eabf9ab0522fe0fe9,CI820293953,LINCOLN CENTER,Special Investigation Report #2025SIC0000348,"Special Investigation Intake Date: January 31, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted following an allegation that a supervisor at the Lincoln Center juvenile facility kneed and slapped a youth during a physical altercation on January 30, 2025. The investigation, which included interviews with multiple staff and the youth (who refused to answer questions), review of video footage (without audio and with no camera in a key room), and medical records, found insufficient evidence to substantiate the youth's claims. While the report concludes no violation was established, the incident involved a youth with a history of aggression and a physical restraint that resulted in a hospital visit, highlighting a volatile situation. The weight of the staff's consistent accounts against the uncooperative youth's initial allegation leads to a finding of no formal culpability, though the altercation itself points to systemic challenges in managing such incidents.",n,3564,175,,7082
+086d307dc62ef0a3df52afbb3571cdb6bb989656785059c36b373652f3ceb41a,CB630201423,CATHOLIC CHARITIES OF SOUTHEAST,Special Investigation Report #2025SIC0000839,"Special Investigation Intake Date: July 3, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted regarding an allegation that Catholic Charities of Southeast Michigan failed to report suspected child abuse by a foster parent. The investigation found that the agency's Chief Administrator did file a formal report (DHS-3200) and initiated a special evaluation upon learning of the historic allegations in 2021, and therefore complied with the law. The report concludes the agency is not culpable for the failure-to-report allegation, as the required actions were taken when the information was formally presented to the agency's leadership.",n,1963,115,,5686
+0872e57dedb4447523503083a427d39dddd2678edbca61dfd2b5ae3596bd7541,CB820201514,WOLVERINE HUMAN SERVICES,Special Investigation Report,"May 4, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report details an investigation into allegations that a parent was denied parenting time and that sibling visits were not occurring for two children in foster care. The investigation found that the agency consistently offered weekly visits at its office, but the parent often failed to confirm or refused to attend because she preferred visits at her home. A safety concern and a court order dictated the change in location from the parent's home to the agency. Sibling visits were hindered because the other agency involved insisted they occur at the parent's home, which was now deemed inappropriate. The agency was found in compliance with all rules; the evidence suggests the parent's own actions and a coordination issue with another agency were primary causes for the lack of in-person visits.",n,3205,155,,6973
+08ac9dbbd57623b750b29284b06226f3607b336e9d42a57919aa9abed6fc3484,CP630201334,OAKLAND COUNTY DHHS,Special Investigation Report #2024SIC0001678,"Special Investigation Intake Date: August 12, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A 13-year-old and a 16-year-old in a licensed placement engaged in sexual intercourse, but the investigation found that Oakland County DHHS, as a licensed Child Placing Agency, did not violate reporting rules because the DHHS employee who was informed of the incident was not an employee under that specific license. The report concludes that no violation was established. The lack of substantiated violation hinges on a technical distinction between employees, not on whether the incident was reported.",n,1386,105,,5304
+08add13d49a98713b2d706e446ecbf1e3d5aec089c174e07eecf648f55fd7309,CI370377212,New Hope Youth Services LLC,Special Investigation Report #2021C0128015,"May 4, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found that the New Hope Youth Center failed to have an appointed Chief Administrator responsible for day-to-day operations and compliance since December 31, 2020, forcing the Program Director to seek support from coworkers at other facilities instead of receiving proper supervision. The licensee is clearly responsible for this failure to assign essential leadership as required.",y,1408,82,,4818
+08e1ccb0ddad1bbb4076755246aced28f9b1f27687112123a3ac65205da2af60,CB630201342,ORCHARDS CHILDRENS SERVICES,Special Investigation Report #2025SIC0000924,Special Investigation Intake Date: 08/08/2025,"Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted regarding allegations that Orchards Children's Services failed to properly communicate with the biological mother (BM) about her children in foster care. The investigation found that while communication regarding service plans and medical issues was adequate and no violation was established in those areas, the agency did violate policy by failing to notify the BM of a placement change when a child's temporary respite stay turned into a nearly two-month placement without her knowledge. The violation points to an agency oversight, but the report indicates the facility is generally in compliance aside from this specific failure.",y,5722,127,,6501
+08e2c02249e01fbd25460513f49522d2191992115469759764854a3c8b5651d2,CI670290161,Eagle Village - Hainley House,Special Investigation Report #2024SIC0001252,"Special Investigation Intake Date: March 19, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The report details two separate incidents where a youth (Youth A) was physically restrained by staff at Eagle Village - Hainley House. The state investigation found both restraints to be unwarranted, as the youth's behavior (throwing rocks, flipping tables, pushing) did not meet the legal threshold of 'severely aggressive behavior' creating a 'serious threat of violence or injury' required for emergency restraint. The facility also failed to submit required incident reports within mandated timeframes. Culpability lies with the facility for improper application of restraint protocols and administrative failures, marking a repeat violation.",y,7471,131,,5137
+090c0830c90a4f4e6d8f01f89e9111bcd22573a380ebb902eff6653df930c763,CB410200976,Bethany Christian Services Inc,Special Investigation Report #2022C0112007,"April 13, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The special investigation found that Bethany Christian Services failed to provide reasonable efforts to reunify a family and finalize a legal guardianship plan, as determined by a court order, due to misunderstandings of court directives and delays in providing required documentation. The agency also committed multiple documentation and procedural violations, including inadequate family team meeting reports, insufficient social work contact narratives, lack of documented private meetings with the child, and failure to conduct required face-to-face meetings with a parent. The investigation concluded that the agency's repeated failures in documentation and engagement substantiate culpability for the violations.",y,4717,126,,5229
+091841a83d975f881a75194b0b27c30c28a6f475730c2aaa6b0cacf9f8380ba4,CI410201278,Pine Rest Christian Mental Health Services,Special Investigation Report #2021C0214021,"June 30, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation was conducted into allegations that a staff member at Maple Lodge Group Home roughed up and pushed a youth (Youth A) during a contraband check. The report concludes that the allegations were not substantiated, as statements from the accused staff member (Staff 1) and a witness youth (Youth C) contradicted the account, and evidence suggested Youth A had a pre-existing grudge and motive to get Staff 1 fired. Ultimately, the state found no policy violations occurred during the incident.",n,3166,114,,6171
+094bee1506fea0500ef64b48ced4f2c7ff563767ec852b494e231c07dd038d66,CO410201223,KENT COUNTY JUVENILE DETENTION,Special Investigation Report #2024SIC0001421,"Special Investigation Intake Date: May 10, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at the Kent County Juvenile Detention Center pushed a youth into his room, causing him to fall and hit his head, after a disagreement over a consequence involving the removal of his bedding. The investigation, including video review, substantiated the push but found no evidence the youth was assaulting the staff, violating policies prohibiting physical punishment and force outside approved techniques. This is a repeat violation, indicating a failure to ensure staff suitability and compliance with behavior management protocols; primary culpability lies with the staff member for the improper use of force and with facility management for failing to prevent recurring violations.",y,3334,130,,11690
+09633cdf2816cc2935ef95b3c491371fa6ec1b067d008034216f9ae1f3bc1be9,CB630315340,Ennis Center for Children Inc,Special Investigation Report #2022C0420013,"June 23, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A licensed foster parent was arrested for felony homicide after a shooting incident that involved domestic violence and substance use, which contradicted the information she provided during her foster home reevaluation and relocation study. The agency, Ennis Center for Children, failed to adequately assess changes in the foster home, including verifying weapon registration and storage, checking for relationship changes or domestic violence, and documenting required compliance records, leading to substantiated violations. The agency is culpable for not following proper reevaluation procedures, while the foster parent misled the agency.",y,5729,118,,6915
+09fdc99bad1426a94ed7c02a7577a7d0414849681e331acb9727c5a2337f8b73,CE630201059,Children's Village,Special Investigation Report #2024C0000929SI,"December 19, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into allegations that a youth (Youth A) had an inappropriate sexual relationship with a staff member (Staff 1) at Children's Village and received special treatment, including a gifted hoodie. The investigation, which included interviews with involved youth, staff, supervisors, and a review of documentation, found no evidence to substantiate the allegations; Youth A denied the claims, the complaining source recanted, and the facility had safety protocols in place to prevent such contact. The report concludes that the facility is in compliance with all rules and no violations were established.",n,3069,127,,6058
+0a3a767ad9b8e5e86ee438540d7b7d2e280bc7cda46f3dd0d87717bd06952b47,CI730404189,House of Love Agency,Special Investigation Report #2024C0001091SI,"Special Investigation Intake Date: January 26, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation found two substantiated violations at the House of Love Agency: first, the Chief Administrator instructed a youth not to say anything that could get the facility shut down or get her in trouble, which constitutes obstructing an investigation; second, a staff member improperly recorded youth on his personal cell phone, violating confidentiality. The allegations regarding insufficient hygiene supplies and rodent infestation were not substantiated. The agency's leadership, particularly the Chief Administrator, bears clear responsibility for the substantiated violations regarding interference with an investigation.",y,4488,112,,5851
+0a3fb6fa31b608d0a80e6a161cfc0359741933ca6a9da95dd0163da4f6af4aee,CI820201008,CALUMET CENTER,Special Investigation Report #2024SIC0001803,"Special Investigation Intake Date: September 25, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A complaint alleged that a youth at the Calumet Center lacked treatment plans, appeared 'drugged' and was not taking medication, and was not attending school. The investigation found the facility in compliance: initial and updated treatment plans were documented and timely, the youth was offered but refused all medication, and he was enrolled but refused to attend school. The report attributes the issues primarily to the youth's refusal to participate in services and notes a family conflict contributed to the perception of him being 'drugged.' Ultimately, the facility was found not culpable for the alleged violations.",n,4592,129,,9746
+0a4d2ca000e70720e3e1bbdcff4bc0bcd0cca0f86b3b49073c0fe1e936971246,CI820294390,VISTA MARIA,Special Investigation Report #2024SIC0001298,"Special Investigation Intake Date: April 1, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation substantiated that inappropriate physical contact, including kissing and touching, occurred between two residents, Youth J and Youth D, at the Vista Maria facility. The incidents happened due to lapses in supervision, including staff not being able to see under a table and, critically, a staff member (Staff 2) failing to follow the facility's own written policy by not positioning herself inside the bathroom while two residents were present. The facility is ultimately culpable for the violation due to its staff's failure to adhere to established supervision protocols.",y,2031,118,,5512
+0a650b4e12123da0e47e688735053f6e463079debcc169c92f8f5900d5f72cdf,CI820294390,VISTA MARIA,Special Investigation Report #2023C0000531,"July 5, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff Team Leader at Vista Maria verbally threatened a youth during a confrontation, telling the youth 'Run up, get done up' and making a statement about the job not paying enough, which constituted a prohibited intervention. The investigation, which included interviews with the youth, complainant, supervisor, and the Team Leader herself, substantiated the allegation, and the Team Leader admitted her statement could be viewed as threatening. This was a repeat violation of rules against threats of harm, indicating a failure of prior corrective actions to ensure compliance.",y,1863,115,,6118
+0a6d98d1a1ef66e0ae393dd30083b657550e6ae902d7a331c6aa8c8f89f0eefc,CB690358779,Wellspring Lutheran Services,Special Investigation Report #2020C0634022,"August 14, 2020","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation established that Wellspring Lutheran Services Gaylord failed to provide a foster parent with a copy of a required special evaluation report within the mandated 10-day timeframe, delaying its receipt by approximately five months after completion. While the agency cited a new licensing worker as a factor, the facility and its supervision are ultimately culpable for this procedural failure.",y,1508,80,,11794
+0a802d2c7a78491079cd5a6cff7b35a2780a4293c0165811c79db415beec9d73,CI460403164,ADRIAN GROUP HOME,Special Investigation Report #2025SIC0000196,"Special Investigation Intake Date: December 11, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth gained access to a steak knife left unsecured by staff in the Adrian Group Home kitchen, leading to a situation where another youth felt threatened, prompting staff intervention. The investigation substantiated a violation of staffing rules due to insufficient supervision and failure to secure dangerous items, as a staff member admitted leaving the knife out and the lockbox unlocked. This was a repeat violation, indicating systemic failures in safety protocols. The facility and the admitting staff member bear clear responsibility for creating the hazardous situation.",y,3874,109,,16567
+0a8cc32eb3eaf133402d28e5a72b8b150f949b7c25d7a61af05c82266af0dfde,CI250410439,Mission Ranch,Special Investigation Report #2023C0000453,"June 20, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","Facility staff attempted to pick up Youth A from a hospital following discharge but left the youth at the hospital after she refused to return to the facility. Staff incorrectly assumed the youth was being readmitted to the hospital and would be under hospital supervision, when in fact she was left unattended in a waiting room, requiring staff to return. The investigation concluded the facility failed to ensure continual supervision as required. Culpability lies with the facility for making an assumption without clear confirmation and failing to follow its own safety procedures.",y,3116,119,,4599
+0aa2e7c3ed2d9a60e49bbb7a9f1da37c4a502735d8c81861998b9b0ccd233b3e,CI820272493,VISTA MARIA - MENTAL HEALTH,Special Investigation Report #2025SIC0000260,"Special Investigation Intake Date: January 6, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was initiated at Vista Maria mental health facility following a specific allegation of sexual assault, made by Youth A, involving a male staff member entering her room at night and causing physical pain and pregnancy concerns. The investigation found no evidence to substantiate the specific assault allegation; Youth A recanted details in a forensic interview and video footage showed no male staff entering her room, leading to a finding of no violation for insufficient staff/supervision. However, the investigation did substantiate a separate violation: facility staff failed to report Youth A's concerning statements as suspected abuse or neglect as required by the Child Protection Law and internal policy, shifting the primary culpability from an individual assault to a systemic failure in mandatory reporting protocol.",y,3785,155,,7831
+0ab508125d21d85ce68c2ead4f6b6330b4fb1666c7e50028cc7c88d2b23e2fda,CI820201063,CHRIST CHILD HOUSE,Special Investigation Report #2025SIC0000748,"Special Investigation Intake Date: May 29, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into allegations that a youth (Youth A) was sexually assaulted by a staff member (Staff 1) and by another youth (Youth B), and that a staff member broke his wrist. The investigation, relying on interviews and record reviews, found insufficient evidence to support any of the allegations, noting that key records were purged, the accused staff member is deceased, and witness accounts contradicted the youth's claims. While the report concludes no violations were substantiated, the tragic nature of the allegations and the inability to fully corroborate or refute them due to time and record-keeping issues leaves a lingering question about the facility's historical oversight.",n,6214,145,,7023
+0ad1c8b777d360d76ded0fc858c262b9b71bdcaa10425e1e61d733753e915a18,CI731001543,Queen of Angels,Special Investigation Report #2024SIC0001236,"Special Investigation Intake Date: March 11, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into allegations that staff at Queen of Angels failed to intervene and restrain Youth B from assaulting Youth A, and that the agency was not doing enough to prevent incidents involving Youth A. The investigation, which included interviews, video review, and document analysis, found that staff appropriately used verbal de-escalation, proximity, and separation to manage a lunchroom incident on March 7, 2024, preventing physical contact. It also found that a safety plan and multiple interventions (1:1 staffing, transition support, treatment plans) were in place for Youth A. Culpability lies with the complainant, as the allegations were unfounded and the facility was found to be in compliance.",n,4066,153,,7657
+0af39419dd58f94608c337c7c30329d8ca7513169bf47b32ecdc84425f730f1b,CI820201488,VISTA MARIA SPECIALTY RESIDENTIAL,Special Investigation Report #2025SIC0000416,"Special Investigation Intake Date: February 28, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at Vista Maria tested positive for alcohol on duty after a workplace injury, confirming allegations of being under the influence. The facility promptly terminated the employee upon receiving the test results. While the report states the agency responded appropriately after the incident, it also notes the situation occurred because existing policies were not proactively enforced to prevent such conduct.",y,3253,78,,8325
+0af6ff0212ca769198dc6df9968457a964ceef4f46dddb52765e9610b8468666,CI820201294,Methodist Children's Home Society,Special Investigation Report #2022C0207005,"November 30, 2021","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation substantiated that two youths engaged in inappropriate sexual behavior due to a brief lapse in supervision while staff monitored two rooms. The facility failed to prevent this despite being aware of one youth's history and also violated staffing ratios on the day of the incident. While the report notes the youths 'manipulated' an opportunity, the facility bears clear responsibility for repeat violations of supervision and staffing rules.",y,4231,90,,5716
+0b36452456a1de23151857e15709826671a90da97a40388826bb10b6ed9fcfdf,CI630201167,Havenwyck Impulse Disorder Program,Special Investigation Report #2022C0325006,"February 2, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","Havenwyck Hospital's Impulse Disorder Program failed to prevent multiple incidents of consensual sexual activity between two youths (Youth A and Youth B) in a shared bedroom, which occurred due to staff not following the facility's established wake-up supervision procedure. The investigation found the facility lacked a written policy or procedure for wake-up and bathroom times, violating licensing rules requiring written policies for care, safety, and supervision. Culpability lies with the facility administration for failing to codify and enforce adequate written supervision policies, resulting in a regulatory violation.",y,3797,122,,6193
+0b3e85d418e8ae375a7cda680f96bcc7807f30d8399b9ae25637fe7f64fc7704,CB410201266,SAMARITAS - WEST,Special Investigation Report #2025SIC0000767,"Special Investigation Intake Date: June 4, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at a Samaritas independent living home repeatedly violated policy by arriving to work intoxicated, purchasing alcohol, vapes, and THC gummies for youth residents, and sharing alcohol and cigarettes with them. The investigation substantiated allegations of the staff member providing substances to minors, drinking on duty, and sleeping during shifts. The staff member demonstrated a clear lack of responsible character and suitability for the role, directly endangering the youths in care.",y,4348,102,,11154
+0b834861fa79a6a7941d74f788079f38c38db125d361bb9ac88457732ad39657,CI820201487,VISTA MARIA OPEN RESIDENTIAL,Special Investigation Report,"November 14, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation at Vista Maria Open Residential found that Staff 1, a relatively new employee, failed to perform required 15-minute variable interval checks on residents, leaving them unsupervised for over two hours. During this lapse, two youth (Youth A and Youth B) were able to enter a bedroom together and engage in consensual sexual contact. Culpability lies primarily with the facility for inadequate staff training and oversight, as Staff 1 was assigned to an unfamiliar unit without proper knowledge of program rules or resident backgrounds.",y,1574,116,,6161
+0bb4a614ac9dac9f3e9136db4757ecc3b10569de81d3704da1a71cbb15261fee,CI820201513,Wolverine Human Services,Special Investigation Report #2022C0217039,"May 20, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A staff member at the Wolverine Center facility physically struck a youth multiple times during an escalating altercation that began when the youth was playing with an air conditioner. The investigation, which included video evidence contradicting staff accounts, substantiated that the staff member used corporal punishment, a violation of state rules, and also found the staff member lacked the ability to perform her duties. The facility is held culpable for the staff member's actions and must submit a corrective action plan.",y,3397,105,,12521
+0bfb821b627c0e5d065e472d2f38496ccdb8e2e77c67bf7dbc6588e838e59119,CS210200969,BAY PINES CENTER,Special Investigation Report #2,"January 6, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Bay Pines Center was injured during a physical restraint, sustaining a dislocated arm and a cut lip, while staff suffered bites and a concussion. The investigation, including video review, found the restraint was properly performed and the injury could not be definitively attributed to staff misconduct, concluding no violation occurred. A separate allegation regarding inadequate medical treatment for the youth's knee pain was also not substantiated, as appropriate care was provided. Based on the evidence, the facility and its staff were not found culpable for the injuries sustained.",n,5424,124,,5707
+0c01dbc0a911bfce31589eac7d2a78f3bcdb315aa98730da3b39a8dc0518b15f,CI820294390,VISTA MARIA,Special Investigation Report #2025SIC0000433,"Special Investigation Intake Date: March 6, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The Michigan Department of Health and Human Services investigated allegations of a male staff member sexually assaulting a youth daily and staff flirting with her at the Vista Maria facility. The investigation found the allegations unsubstantiated, as the youth recanted her claims, multiple interviews and document reviews contradicted the initial report, and the youth's frequent hospitalizations made the alleged daily assaults implausible. Based on the evidence gathered, the facility was found to be in compliance with all applicable rules, with no substantial violations identified. The facility's staff is cleared of wrongdoing in this matter.",n,2030,134,,8757
+0c0df2a901cd0770cbe3aac0bf98ef80d83e03fbbf4302be0f1fb5f3fd77ce7e,CB410201266,Samaritas,Special Investigation Report #2022C0212011,"May 10, 2022","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation examined an allegation that Samaritas - West failed to inform foster parents of a child's aggressive behaviors before placement. While interviews determined the information was verbally shared in a pre-placement meeting, the agency violated licensing rules by failing to properly document that information sharing and other required placement paperwork. Specifically, violations were established for not documenting the change of placement and for failing to verify that required borrowed bed orientation documents were provided to the foster parents. The agency is clearly culpable for multiple administrative and documentation failures that compromised procedural safeguards.",y,4445,125,,4250
+0c41ae3f04cdd369823fb0883552a534867b2d6d582796cc53773009c2dd9d7a,CI250201521,Zonta House,Special Investigation Report #2023C0000740,"October 18, 2023","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth at Zonta House was physically restrained by three staff members after becoming agitated when staff were inspecting his personal hoodie. The youth subsequently went to the hospital, where bruising was documented, but the investigation concluded the restraint was not a physical punishment and that the injuries were caused by the youth's own resistance during the incident. The report also investigated an allegation that staff refused a youth's request to contact a guardian, but found no substantiation. The investigation concluded that no licensing violations were established in either case.",n,4774,115,,5281
+0c55f4daa8fd99c9edaae903a41fa3e2ffa7ca50e0e78af49c9830c8fb26e496,CI670414130,Osceola Youth Center,Special Investigation Report #2025SIC0000567,"Special Investigation Intake Date: April 17, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","The investigation examined allegations that a staff member (Staff 1) at Osceola Youth Center pursued an inappropriate relationship with a resident (Youth A). While the specific allegation of a romantic relationship was not substantiated, the investigation found that Staff 1 was terminated for coming to work under the influence of marijuana, exhibited unprofessional behavior including poor boundaries and inappropriate language, and failed to meet the required ability to perform his duties. Additionally, a separate violation was substantiated because another staff member (Staff 4) failed to report a resident's statement about having sex with Staff 1 in a facility van as required by child protection policy. Overall culpability for the violations lies with both the individual staff members for their misconduct and the facility administration for systemic failures in oversight and reporting.",y,9109,167,,6714
+0c5f971230a9bfb5827f9ed993bd235e9fceb06f0a5828d442264cd8ce6c7f9f,CI820201008,Spectrum Juvenile Justice Services,Special Investigation Report #2019C0219041,"August 08, 2019","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","An investigation into the Calumet Center juvenile facility found that staff members transported a resident to his bedroom by holding his arms and dragging his feet along the floor after he dropped his weight, which violated the facility's approved behavior management system. The incident occurred after the resident was destroying property in another resident's room and became physically aggressive toward staff. The facility is clearly culpable for the violation, as the staff's technique was unapproved and not compliant with established policy, and the administration is required to submit a corrective action plan.",y,1960,117,,5653
+0c68041c7d0a15eafc18cfb1abf6aa049acccd04180779d989e727b09b88d2ec,CI460403164,ADRIAN GROUP HOME,Special Investigation Report #2025SIC0000866,"Special Investigation Intake Date: July 21, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","On July 20, 2025, Staff 1 at Adrian Group Home, after youth became dysregulated and aggressive, struck Youth A in the face (leaving a small scratch) and later slapped and pushed Youth B, also making derogatory verbal threats. The investigation substantiated these physical and verbal abuses, which violate policies prohibiting physical punishment and verbal abuse. The primary culpability lies with Staff 1 for her abusive actions, though the facility's administration is also accountable for inadequate oversight and a recent prior similar violation.",y,7463,116,,6623
+0c6eacc4cbb016a23cdd8772147929656275001135f30fde7cf3f7286d904f5a,CI820201488,Vista Maria Specialty Residential,Special Investigation Report #2025SIC0000598,"Special Investigation Intake Date: April 23, 2025","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A special investigation was conducted into allegations made by a former youth at Vista Maria from 2007-2008, covering misdiagnosis, improper seclusion and medication, dangerous restraints, inadequate medical follow-up for self-harm, staff instigating fights, improper background checks, and dismissal of sexual misconduct. The investigation found no established violations for any allegation due to insufficient records and inability to interview key parties, concluding the facility is in compliance. However, the inability to substantiate the serious claims stems primarily from record destruction and witness unavailability, not from a definitive finding of proper past conduct.",n,4327,129,,6112
+0cb620a6a82dd138573239962edbad70c67e63a650f2af19f0d9b8c78b03dd57,CI790363049,CLARENCE FISCHER CENTER,Special Investigation Report #2024SIC0001251,"Special Investigation Intake Date: March 18, 2024","Please analyze this Special Investigation Report and respond with a JSON object containing exactly two fields:
+
+1. ""summary"": A few sentences explaining what went down here, including one extra sentence weighing in on culpability.
+2. ""violation"": Either ""y"" if allegations of policy/code violations were substantiated in this report, or ""n"" if they were not substantiated.
+
+Return ONLY the JSON object, no other text. Format:
+{""summary"": ""..."", ""violation"": ""y""}","A youth facility was investigated after allegations that a supervisor (Supervisor W) punched a youth (Youth A) in the face during a restraint, causing a lip injury. The report found the evidence conflicting and could not substantiate that specific rule violation. However, the investigation substantiated two other violations: Supervisor Y performed an unwarranted restraint on the same youth the next day, and Staff 2, who witnessed the alleged punch, failed to report it to authorities as required by child protection law. The facility is culpable for the documented failures in restraint protocol and mandated reporting.",y,10291,127,,7342
