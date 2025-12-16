@@ -38,13 +38,38 @@ def load_sir_summaries_csv(csv_path):
     return summaries_by_sha
 
 
-def load_document_info_csv(csv_path, sir_summaries=None):
+def load_sir_violation_levels_csv(csv_path):
+    """Load SIR violation levels CSV and create a lookup by SHA256."""
+    levels_by_sha = {}
+    
+    if not os.path.exists(csv_path):
+        print(f"Warning: SIR violation levels file not found: {csv_path}")
+        return levels_by_sha
+    
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sha256 = row.get('sha256', '').strip()
+            if not sha256:
+                continue
+            
+            levels_by_sha[sha256] = {
+                'level': row.get('level', ''),
+                'justification': row.get('justification', '')
+            }
+    
+    return levels_by_sha
+
+
+def load_document_info_csv(csv_path, sir_summaries=None, sir_violation_levels=None):
     """Load document info CSV and group by agency."""
     documents_by_agency = defaultdict(list)
     agency_names = {}  # Map agency_id to agency_name
     
     if sir_summaries is None:
         sir_summaries = {}
+    if sir_violation_levels is None:
+        sir_violation_levels = {}
     
     with open(csv_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -73,12 +98,16 @@ def load_document_info_csv(csv_path, sir_summaries=None):
             if sha256 in sir_summaries:
                 document['sir_summary'] = sir_summaries[sha256]
             
+            # Add SIR violation level if available
+            if sha256 in sir_violation_levels:
+                document['sir_violation_level'] = sir_violation_levels[sha256]
+            
             documents_by_agency[agency_id].append(document)
     
     return documents_by_agency, agency_names
 
 
-def generate_json_files(document_csv, output_dir, sir_summaries_csv=None):
+def generate_json_files(document_csv, output_dir, sir_summaries_csv=None, sir_violation_levels_csv=None):
     """Generate JSON files for the website."""
     
     # Create output directory
@@ -91,9 +120,16 @@ def generate_json_files(document_csv, output_dir, sir_summaries_csv=None):
         sir_summaries = load_sir_summaries_csv(sir_summaries_csv)
         print(f"Loaded {len(sir_summaries)} SIR summaries")
     
+    # Load SIR violation levels if provided
+    sir_violation_levels = {}
+    if sir_violation_levels_csv:
+        print("Loading SIR violation levels data...")
+        sir_violation_levels = load_sir_violation_levels_csv(sir_violation_levels_csv)
+        print(f"Loaded {len(sir_violation_levels)} SIR violation levels")
+    
     # Load document info data
     print("Loading document info data...")
-    documents_by_agency, agency_names = load_document_info_csv(document_csv, sir_summaries)
+    documents_by_agency, agency_names = load_document_info_csv(document_csv, sir_summaries, sir_violation_levels)
     
     # Build agency list from document data
     print("Building agency list from documents...")
@@ -154,6 +190,10 @@ def main():
         help="Path to SIR summaries CSV file (optional)"
     )
     parser.add_argument(
+        "--sir-violation-levels-csv",
+        help="Path to SIR violation levels CSV file (optional)"
+    )
+    parser.add_argument(
         "--output-dir",
         default="public/data",
         help="Output directory for JSON files"
@@ -169,7 +209,8 @@ def main():
     generate_json_files(
         args.document_csv,
         args.output_dir,
-        args.sir_summaries_csv
+        args.sir_summaries_csv,
+        args.sir_violation_levels_csv
     )
 
 

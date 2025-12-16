@@ -15,6 +15,7 @@ echo "==> Step 1: Generating JSON data for website..."
 python3 generate_website_data.py \
   --document-csv ../pdf_parsing/document_info.csv \
   --sir-summaries-csv ../pdf_parsing/sir_summaries.csv \
+  --sir-violation-levels-csv ../pdf_parsing/sir_violation_levels.csv \
   --output-dir public/data
 
 echo ""
@@ -23,7 +24,8 @@ python3 export_parquet_to_json.py \
   --parquet-dir ../pdf_parsing/parquet_files \
   --output-dir public/documents \
   --document-csv ../pdf_parsing/document_info.csv \
-  --sir-summaries-csv ../pdf_parsing/sir_summaries.csv
+  --sir-summaries-csv ../pdf_parsing/sir_summaries.csv \
+  --sir-violation-levels-csv ../pdf_parsing/sir_violation_levels.csv
 
 echo ""
 echo "==> Step 3: Building website with Vite..."

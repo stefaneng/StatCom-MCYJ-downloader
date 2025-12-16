@@ -46,6 +46,30 @@ def load_sir_summaries(sir_summaries_csv: str) -> Dict[str, Dict]:
     return summaries_by_sha
 
 
+def load_sir_violation_levels(sir_violation_levels_csv: str) -> Dict[str, Dict]:
+    """Load SIR violation levels CSV and create a lookup by SHA256."""
+    levels_by_sha = {}
+    
+    if not sir_violation_levels_csv or not Path(sir_violation_levels_csv).exists():
+        logger.warning(f"SIR violation levels CSV not found: {sir_violation_levels_csv}")
+        return levels_by_sha
+    
+    with open(sir_violation_levels_csv, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sha256 = row.get('sha256', '').strip()
+            if not sha256:
+                continue
+            
+            levels_by_sha[sha256] = {
+                'level': row.get('level', ''),
+                'justification': row.get('justification', '')
+            }
+    
+    logger.info(f"Loaded {len(levels_by_sha)} SIR violation levels")
+    return levels_by_sha
+
+
 def load_document_metadata(document_csv: str) -> Dict[str, Dict]:
     """Load document CSV and create a lookup by SHA256."""
     metadata_by_sha = {}
@@ -73,7 +97,7 @@ def load_document_metadata(document_csv: str) -> Dict[str, Dict]:
     return metadata_by_sha
 
 
-def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None, sir_summaries_csv: Optional[str] = None) -> None:
+def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None, sir_summaries_csv: Optional[str] = None, sir_violation_levels_csv: Optional[str] = None) -> None:
     """Export each parquet row to a separate JSON file."""
     parquet_path = Path(parquet_dir)
     output_path = Path(output_dir)
@@ -90,6 +114,9 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
     
     # Load SIR summaries if provided
     sir_summaries = load_sir_summaries(sir_summaries_csv) if sir_summaries_csv else {}
+    
+    # Load SIR violation levels if provided
+    sir_violation_levels = load_sir_violation_levels(sir_violation_levels_csv) if sir_violation_levels_csv else {}
     
     # Find all parquet files
     parquet_files = list(parquet_path.glob("*.parquet"))
@@ -161,6 +188,14 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
                         'violation': summary['violation']
                     }
                 
+                # Add SIR violation level if available
+                if sha256 in sir_violation_levels:
+                    level_data = sir_violation_levels[sha256]
+                    document['sir_violation_level'] = {
+                        'level': level_data['level'],
+                        'justification': level_data['justification']
+                    }
+                
                 # Write to individual JSON file
                 output_file = output_path / f"{sha256}.json"
                 with open(output_file, 'w', encoding='utf-8') as f:
@@ -207,6 +242,11 @@ def main():
         help="Path to SIR summaries CSV file (default: ../pdf_parsing/sir_summaries.csv)"
     )
     parser.add_argument(
+        "--sir-violation-levels-csv",
+        default=str(script_dir / "../pdf_parsing/sir_violation_levels.csv"),
+        help="Path to SIR violation levels CSV file (default: ../pdf_parsing/sir_violation_levels.csv)"
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose debug output"
@@ -220,7 +260,7 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     
-    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv, args.sir_summaries_csv)
+    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv, args.sir_summaries_csv, args.sir_violation_levels_csv)
 
 
 if __name__ == "__main__":
