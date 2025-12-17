@@ -54,13 +54,14 @@ Based on the categorization instructions below, please analyze this Special Inve
 Categorization Instructions:
 {theming_instructions}
 
-Please respond with a JSON object containing exactly two fields:
+Please respond with a JSON object containing exactly three fields:
 
 1. "level": Either "low", "moderate", or "severe" based on the categorization instructions above
 2. "justification": A brief explanation of why you chose this level, referencing the specific violations found and how they align with the categorization criteria
+3. "keywords": A list of keywords pertinent to the reasons why this document is labelled with this violation level (e.g., ["physical assault", "inadequate supervision"], ["medication error"], ["paperwork delay", "documentation"])
 
 Return ONLY the JSON object, no other text. Format:
-{{"level": "...", "justification": "..."}}"""
+{{"level": "...", "justification": "...", "keywords": [...]}}"""
 
 
 def get_api_key() -> str:
@@ -225,7 +226,7 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
         document_text: Full document text (all pages concatenated)
     
     Returns:
-        Dict with level, justification, response, tokens, cost, and duration
+        Dict with level, justification, keywords, response, tokens, cost, and duration
         
     Raises:
         Exception: If API request fails or JSON response cannot be parsed
@@ -298,20 +299,53 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
     # Parse JSON response
     level = ''
     justification = ''
+    keywords = []
     
     try:
-        # Try to extract JSON from the response (in case there's extra text)
-        json_match = re.search(r'\{[^{}]*"level"[^{}]*"justification"[^{}]*\}', ai_response, re.DOTALL)
-        if json_match:
-            json_str = json_match.group(0)
-            parsed = json.loads(json_str)
-            level = parsed.get('level', '')
-            justification = parsed.get('justification', '')
+        # Try to parse the response as JSON directly first
+        parsed = json.loads(ai_response)
+        level = parsed.get('level', '')
+        justification = parsed.get('justification', '')
+        keywords = parsed.get('keywords', [])
+    except json.JSONDecodeError:
+        # If direct parsing fails, try to extract JSON from the response (in case there's extra text)
+        # Find the first { and attempt to parse from there, trying progressively longer substrings
+        start_idx = ai_response.find('{')
+        if start_idx != -1:
+            # Try to find a valid JSON object by looking for matching braces
+            brace_count = 0
+            for i in range(start_idx, len(ai_response)):
+                if ai_response[i] == '{':
+                    brace_count += 1
+                elif ai_response[i] == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        # Found matching closing brace
+                        json_str = ai_response[start_idx:i+1]
+                        try:
+                            parsed = json.loads(json_str)
+                            level = parsed.get('level', '')
+                            justification = parsed.get('justification', '')
+                            keywords = parsed.get('keywords', [])
+                            break
+                        except json.JSONDecodeError:
+                            continue
+            else:
+                logger.error("No valid JSON object found in response")
+                raise Exception("No valid JSON object found in response")
         else:
-            # If no JSON found, try parsing the whole response
-            parsed = json.loads(ai_response)
-            level = parsed.get('level', '')
-            justification = parsed.get('justification', '')
+            logger.error("No JSON object found in response")
+            raise Exception("No JSON object found in response")
+    
+    # Validate and normalize parsed values (applies to both parsing paths)
+    try:
+        # Ensure keywords is a list and handle None/empty cases properly
+        if keywords is None:
+            keywords = []
+        elif not isinstance(keywords, list):
+            logger.warning(f"Keywords is not a list, converting: {keywords}")
+            # Convert to string and wrap in list
+            keywords = [str(keywords)] if keywords else []
         
         # Normalize level to low, moderate, or severe
         normalized_level = normalize_violation_level(level)
@@ -323,15 +357,16 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
         if not level:
             raise ValueError(f"Could not extract valid level from response: {ai_response[:200]}")
     except (json.JSONDecodeError, AttributeError, KeyError, ValueError) as e:
-        # If JSON parsing fails, raise exception to skip this result
-        logger.error(f"Failed to parse JSON response: {e}")
+        # If JSON parsing or validation fails, raise exception to skip this result
+        logger.error(f"Failed to parse/validate JSON response: {e}")
         logger.error(f"Raw response: {ai_response}")
-        raise Exception(f"JSON parsing failed: {e}")
+        raise Exception(f"JSON parsing/validation failed: {e}")
     
     return {
         'completion_id': completion_id,
         'level': level,
         'justification': justification,
+        'keywords': keywords,
         'response': ai_response,  # Keep raw response for debugging
         'input_tokens': input_tokens,
         'output_tokens': output_tokens,
@@ -468,6 +503,7 @@ def main():
             if result['cost']:
                 logger.info(f"  Cost: ${result['cost']:.6f}")
             logger.info(f"  Level: {result['level']}")
+            logger.info(f"  Keywords: {result['keywords']}")
             logger.info(f"  Justification preview: {result['justification'][:150]}...")
             
             # Store result
@@ -479,6 +515,7 @@ def main():
                 'date': sir_info.get('date', ''),
                 'level': result['level'],
                 'justification': result['justification'],
+                'keywords': json.dumps(result['keywords']),  # Store as JSON string
                 'input_tokens': result['input_tokens'],
                 'output_tokens': result['output_tokens'],
                 'cost': result['cost'],
@@ -509,7 +546,7 @@ def main():
     
     with open(output_path, 'a', newline='', encoding='utf-8') as f:
         fieldnames = ['sha256', 'agency_id', 'agency_name', 'document_title', 'date',
-                     'level', 'justification',
+                     'level', 'justification', 'keywords',
                      'input_tokens', 'output_tokens', 'cost', 'duration_ms']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         

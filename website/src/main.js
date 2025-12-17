@@ -11,8 +11,125 @@ let apiKey = null; // Store decrypted API key
 
 // Filter state
 let filters = {
-    sirOnly: false
+    sirOnly: false,
+    keywords: [] // Array of selected keywords
 };
+
+// Trie data structure for keyword autocomplete
+class TrieNode {
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+        this.isFullKeyword = false; // Track if this is an actual full keyword vs just a word fragment
+        this.fullKeywords = new Set(); // Store which full keywords contain this word/prefix
+        this.count = 0; // Number of documents with this keyword (only for full keywords)
+    }
+}
+
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+        this.keywordCounts = new Map(); // Track counts for full keywords
+    }
+
+    insert(word, isFullKeyword = false, fullKeywordPhrase = null) {
+        let node = this.root;
+        word = word.toLowerCase();
+        
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char);
+            
+            // Track which full keyword this prefix belongs to
+            if (fullKeywordPhrase) {
+                node.fullKeywords.add(fullKeywordPhrase.toLowerCase());
+            }
+        }
+        node.isEndOfWord = true;
+        if (isFullKeyword) {
+            node.isFullKeyword = true;
+            const lowerKey = word.toLowerCase();
+            this.keywordCounts.set(lowerKey, (this.keywordCounts.get(lowerKey) || 0) + 1);
+            node.count = this.keywordCounts.get(lowerKey);
+        }
+        if (fullKeywordPhrase) {
+            node.fullKeywords.add(fullKeywordPhrase.toLowerCase());
+        }
+    }
+
+    search(prefix) {
+        let node = this.root;
+        prefix = prefix.toLowerCase();
+        
+        for (const char of prefix) {
+            if (!node.children.has(char)) {
+                return [];
+            }
+            node = node.children.get(char);
+        }
+        
+        const results = new Map(); // Use map to deduplicate
+        this._collectKeywords(node, prefix, results);
+        return Array.from(results.values()).sort((a, b) => b.count - a.count);
+    }
+
+    _collectKeywords(node, prefix, results, maxResults = 10) {
+        if (results.size >= maxResults) return;
+        
+        // If this is a full keyword, add it
+        if (node.isEndOfWord && node.isFullKeyword) {
+            const lowerPrefix = prefix.toLowerCase();
+            if (!results.has(lowerPrefix)) {
+                results.set(lowerPrefix, { 
+                    keyword: prefix, 
+                    count: this.keywordCounts.get(lowerPrefix) || node.count 
+                });
+            }
+        }
+        
+        // Add all full keywords that contain this word/prefix
+        for (const fullKeyword of node.fullKeywords) {
+            if (!results.has(fullKeyword)) {
+                results.set(fullKeyword, { 
+                    keyword: fullKeyword, 
+                    count: this.keywordCounts.get(fullKeyword) || 1
+                });
+            }
+        }
+        
+        // Continue traversing to find more matches
+        for (const [char, childNode] of node.children) {
+            this._collectKeywords(childNode, prefix + char, results, maxResults);
+        }
+    }
+
+    getAllKeywords() {
+        const results = new Map();
+        this._collectAllFullKeywords(this.root, '', results);
+        return Array.from(results.values()).sort((a, b) => b.count - a.count);
+    }
+    
+    _collectAllFullKeywords(node, prefix, results) {
+        if (node.isEndOfWord && node.isFullKeyword) {
+            const lowerPrefix = prefix.toLowerCase();
+            if (!results.has(lowerPrefix)) {
+                results.set(lowerPrefix, { 
+                    keyword: prefix, 
+                    count: this.keywordCounts.get(lowerPrefix) || node.count 
+                });
+            }
+        }
+        
+        for (const [char, childNode] of node.children) {
+            this._collectAllFullKeywords(childNode, prefix + char, results);
+        }
+    }
+}
+
+let keywordTrie = new Trie();
+let allKeywords = new Set();
 
 // Load and display data
 async function init() {
@@ -29,12 +146,16 @@ async function init() {
         allAgencies = await response.json();
         filteredAgencies = allAgencies;
         
+        // Build keyword trie from all documents
+        buildKeywordTrie();
+        
         hideLoading();
         displayStats();
         displayAgencies(allAgencies);
         setupSearch();
         setupShaLookup();
         setupFilters();
+        setupKeywordFilter();
         handleUrlHash();
         handleQueryStringDocument();
         
@@ -91,6 +212,18 @@ function applyFilters() {
                 return false;
             }
             
+            // Filter by keywords (OR logic - match ANY keyword)
+            if (filters.keywords && filters.keywords.length > 0) {
+                const docKeywords = d.sir_violation_level?.keywords || [];
+                const docKeywordsLower = docKeywords.map(k => k.toLowerCase());
+                const hasAnyKeyword = filters.keywords.some(filterKw => 
+                    docKeywordsLower.includes(filterKw.toLowerCase())
+                );
+                if (!hasAnyKeyword) {
+                    return false;
+                }
+            }
+            
             return true;
         });
         
@@ -118,6 +251,138 @@ function setupFilters() {
         applyFilters();
     });
 }
+
+function buildKeywordTrie() {
+    // Collect all keywords from all documents
+    // Split each keyword by whitespace to allow partial word matching
+    allAgencies.forEach(agency => {
+        if (agency.documents && Array.isArray(agency.documents)) {
+            agency.documents.forEach(doc => {
+                if (doc.sir_violation_level && doc.sir_violation_level.keywords && Array.isArray(doc.sir_violation_level.keywords)) {
+                    doc.sir_violation_level.keywords.forEach(keyword => {
+                        // Insert the full keyword phrase and mark it as a full keyword
+                        keywordTrie.insert(keyword, true, keyword);
+                        allKeywords.add(keyword.toLowerCase());
+                        
+                        // Also insert individual words from the keyword for search purposes
+                        // These link back to the full keyword so typing "inj" can find "serious injury"
+                        const words = keyword.trim().split(/\s+/);
+                        words.forEach(word => {
+                            if (word.length > 0) {
+                                keywordTrie.insert(word, false, keyword);
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    });
+    console.log(`Built keyword trie with ${allKeywords.size} unique keywords`);
+}
+
+function setupKeywordFilter() {
+    const keywordInput = document.getElementById('keywordFilterInput');
+    const keywordSuggestions = document.getElementById('keywordSuggestions');
+    const selectedKeywordsContainer = document.getElementById('selectedKeywords');
+    
+    if (!keywordInput) return; // Element not added yet
+    
+    // Handle input for autocomplete
+    keywordInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        
+        if (query.length < 2) {
+            keywordSuggestions.style.display = 'none';
+            return;
+        }
+        
+        const suggestions = keywordTrie.search(query);
+        
+        if (suggestions.length === 0) {
+            keywordSuggestions.style.display = 'none';
+            return;
+        }
+        
+        keywordSuggestions.innerHTML = suggestions.map(s => `
+            <div class="keyword-suggestion" data-keyword="${escapeHtml(s.keyword)}">
+                <span>${escapeHtml(s.keyword)}</span>
+                <span style="color: #666; font-size: 0.85em;">(${s.count})</span>
+            </div>
+        `).join('');
+        keywordSuggestions.style.display = 'block';
+        
+        // Add click handlers to suggestions
+        keywordSuggestions.querySelectorAll('.keyword-suggestion').forEach(div => {
+            div.addEventListener('click', () => {
+                const keyword = div.dataset.keyword;
+                addKeywordFilter(keyword);
+                keywordInput.value = '';
+                keywordSuggestions.style.display = 'none';
+            });
+        });
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#keywordFilterInput') && !e.target.closest('#keywordSuggestions')) {
+            keywordSuggestions.style.display = 'none';
+        }
+    });
+    
+    // Allow pressing Enter to add the first suggestion
+    keywordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const firstSuggestion = keywordSuggestions.querySelector('.keyword-suggestion');
+            if (firstSuggestion) {
+                const keyword = firstSuggestion.dataset.keyword;
+                addKeywordFilter(keyword);
+                keywordInput.value = '';
+                keywordSuggestions.style.display = 'none';
+            }
+        }
+    });
+}
+
+function addKeywordFilter(keyword) {
+    const keywordLower = keyword.toLowerCase();
+    
+    // Check if keyword is already selected
+    if (filters.keywords.includes(keywordLower)) {
+        return;
+    }
+    
+    filters.keywords.push(keywordLower);
+    renderSelectedKeywords();
+    applyFilters();
+}
+
+function removeKeywordFilter(keyword) {
+    filters.keywords = filters.keywords.filter(k => k !== keyword.toLowerCase());
+    renderSelectedKeywords();
+    applyFilters();
+}
+
+function renderSelectedKeywords() {
+    const container = document.getElementById('selectedKeywords');
+    
+    if (!container) return;
+    
+    if (filters.keywords.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.9em; font-style: italic;">No keywords selected</div>';
+        return;
+    }
+    
+    container.innerHTML = filters.keywords.map(keyword => `
+        <span class="selected-keyword-badge">
+            ${escapeHtml(keyword)}
+            <button class="remove-keyword-btn" onclick="window.removeKeywordFilter('${escapeHtml(keyword)}')" title="Remove keyword">✕</button>
+        </span>
+    `).join('');
+}
+
+// Export functions to window for inline onclick handlers
+window.removeKeywordFilter = removeKeywordFilter;
 
 function displayAgencies(agencies) {
     const agenciesEl = document.getElementById('agencies');
@@ -236,6 +501,15 @@ function renderDocuments(documents) {
                             ${d.sir_summary.violation === 'n' ? '<span style="color: #27ae60; margin-left: 6px;">✓ No Violation</span>' : ''}
                         </div>
                         <div style="font-size: 0.9em; line-height: 1.5; color: #555;">${escapeHtml(d.sir_summary.summary)}</div>
+                        ${hasViolationLevel && d.sir_violation_level.keywords && d.sir_violation_level.keywords.length > 0 ? `
+                            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px;">
+                                <span style="font-size: 0.8em; color: #666; margin-right: 4px;">🏷️</span>
+                                ${d.sir_violation_level.keywords.slice(0, 5).map(kw => 
+                                    `<span style="background: #e8f4f8; color: #2980b9; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #3498db;">${escapeHtml(kw)}</span>`
+                                ).join('')}
+                                ${d.sir_violation_level.keywords.length > 5 ? `<span style="font-size: 0.75em; color: #666;">+${d.sir_violation_level.keywords.length - 5} more</span>` : ''}
+                            </div>
+                        ` : ''}
                     </div>
                 ` : ''}
                 ${d.sha256 ? `
@@ -435,10 +709,20 @@ function showDocumentModal(docData, docMetadata) {
                     </h3>
                 </div>
                 <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f39c12; line-height: 1.6; color: #333;">
-                    <div style="margin-bottom: ${docData.sir_violation_level && docData.sir_violation_level.justification ? '15px' : '0'};">
+                    <div style="margin-bottom: ${docData.sir_violation_level && (docData.sir_violation_level.justification || (docData.sir_violation_level.keywords && docData.sir_violation_level.keywords.length > 0)) ? '15px' : '0'};">
                         <strong style="color: #2c3e50;">Summary:</strong>
                         <div style="margin-top: 8px;">${escapeHtml(docData.sir_summary.summary)}</div>
                     </div>
+                    ${docData.sir_violation_level && docData.sir_violation_level.keywords && docData.sir_violation_level.keywords.length > 0 ? `
+                        <div style="padding-top: 15px; border-top: 1px solid #ecf0f1; margin-bottom: ${docData.sir_violation_level.justification ? '15px' : '0'};">
+                            <strong style="color: #2c3e50;">Keywords:</strong>
+                            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
+                                ${docData.sir_violation_level.keywords.map(kw => 
+                                    `<span style="background: #e8f4f8; color: #2980b9; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; border: 1px solid #3498db;">${escapeHtml(kw)}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
                     ${docData.sir_violation_level && docData.sir_violation_level.justification ? `
                         <div style="padding-top: 15px; border-top: 1px solid #ecf0f1;">
                             <strong style="color: #2c3e50;">Severity Justification:</strong>

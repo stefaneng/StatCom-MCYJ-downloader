@@ -61,9 +61,20 @@ def load_sir_violation_levels(sir_violation_levels_csv: str) -> Dict[str, Dict]:
             if not sha256:
                 continue
             
+            # Parse keywords from JSON string if present
+            keywords_str = row.get('keywords', '')
+            keywords = []
+            if keywords_str:
+                try:
+                    keywords = json.loads(keywords_str)
+                except (json.JSONDecodeError, ValueError):
+                    logger.warning(f"Failed to parse keywords for {sha256}: {keywords_str}")
+                    keywords = []
+            
             levels_by_sha[sha256] = {
                 'level': row.get('level', ''),
-                'justification': row.get('justification', '')
+                'justification': row.get('justification', ''),
+                'keywords': keywords
             }
     
     logger.info(f"Loaded {len(levels_by_sha)} SIR violation levels")
@@ -193,7 +204,8 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
                     level_data = sir_violation_levels[sha256]
                     document['sir_violation_level'] = {
                         'level': level_data['level'],
-                        'justification': level_data['justification']
+                        'justification': level_data['justification'],
+                        'keywords': level_data.get('keywords', [])
                     }
                 
                 # Write to individual JSON file

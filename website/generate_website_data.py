@@ -53,9 +53,20 @@ def load_sir_violation_levels_csv(csv_path):
             if not sha256:
                 continue
             
+            # Parse keywords from JSON string if present
+            keywords_str = row.get('keywords', '')
+            keywords = []
+            if keywords_str:
+                try:
+                    keywords = json.loads(keywords_str)
+                except (json.JSONDecodeError, ValueError):
+                    print(f"Warning: Failed to parse keywords for {sha256}")
+                    keywords = []
+            
             levels_by_sha[sha256] = {
                 'level': row.get('level', ''),
-                'justification': row.get('justification', '')
+                'justification': row.get('justification', ''),
+                'keywords': keywords
             }
     
     return levels_by_sha

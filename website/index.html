@@ -621,6 +621,56 @@
             color: #666;
         }
         
+        .keyword-suggestion {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .keyword-suggestion:last-child {
+            border-bottom: none;
+        }
+        
+        .keyword-suggestion:hover {
+            background: #f8f9fa;
+        }
+        
+        .selected-keyword-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .remove-keyword-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+        
+        .remove-keyword-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
         @media (max-width: 768px) {
             .agency-info {
                 grid-template-columns: 1fr;
@@ -668,11 +718,43 @@
         
         <div class="search-filter" style="margin-bottom: 20px;">
             <h3 style="margin-bottom: 12px; color: #2c3e50; font-size: 1.1em;">Filters</h3>
-            <div style="display: grid; gap: 10px;">
+            <div style="display: grid; gap: 15px;">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                     <input type="checkbox" id="filterSirOnly" style="cursor: pointer;">
                     <span>Special Investigation Reports Only</span>
                 </label>
+                
+                <div style="border-top: 1px solid #ddd; padding-top: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                        🏷️ Filter by Keywords
+                    </label>
+                    <div style="position: relative;">
+                        <input 
+                            type="text" 
+                            id="keywordFilterInput" 
+                            placeholder="Type to search keywords (e.g., 'supervision', 'assault')..."
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+                        />
+                        <div id="keywordSuggestions" style="
+                            display: none;
+                            position: absolute;
+                            top: 100%;
+                            left: 0;
+                            right: 0;
+                            background: white;
+                            border: 1px solid #ddd;
+                            border-top: none;
+                            border-radius: 0 0 4px 4px;
+                            max-height: 200px;
+                            overflow-y: auto;
+                            z-index: 100;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        "></div>
+                    </div>
+                    <div id="selectedKeywords" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px;">
+                        <div style="color: #666; font-size: 0.9em; font-style: italic;">No keywords selected</div>
+                    </div>
+                </div>
             </div>
         </div>
         
