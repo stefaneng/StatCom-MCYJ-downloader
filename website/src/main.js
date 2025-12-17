@@ -148,7 +148,10 @@ async function init() {
         
         // Build keyword trie from all documents
         buildKeywordTrie();
-        
+
+        // Render initial bar chart with top 10 keywords
+        renderKeywordBarChart();
+
         hideLoading();
         displayStats();
         displayAgencies(allAgencies);
@@ -365,24 +368,77 @@ function removeKeywordFilter(keyword) {
 
 function renderSelectedKeywords() {
     const container = document.getElementById('selectedKeywords');
-    
+
     if (!container) return;
-    
+
     if (filters.keywords.length === 0) {
         container.innerHTML = '<div style="color: #666; font-size: 0.9em; font-style: italic;">No keywords selected</div>';
-        return;
+    } else {
+        container.innerHTML = filters.keywords.map(keyword => `
+            <span class="selected-keyword-badge">
+                ${escapeHtml(keyword)}
+                <button class="remove-keyword-btn" onclick="window.removeKeywordFilter('${escapeHtml(keyword)}')" title="Remove keyword">✕</button>
+            </span>
+        `).join('');
     }
-    
-    container.innerHTML = filters.keywords.map(keyword => `
-        <span class="selected-keyword-badge">
-            ${escapeHtml(keyword)}
-            <button class="remove-keyword-btn" onclick="window.removeKeywordFilter('${escapeHtml(keyword)}')" title="Remove keyword">✕</button>
-        </span>
-    `).join('');
+
+    // Update the bar chart to reflect selected keywords
+    renderKeywordBarChart();
 }
 
 // Export functions to window for inline onclick handlers
 window.removeKeywordFilter = removeKeywordFilter;
+
+/**
+ * Render the keyword bar chart
+ * When no keywords are selected: show top 10 keywords
+ * When keywords are selected: show those keywords
+ */
+function renderKeywordBarChart() {
+    const container = document.getElementById('barChartContainer');
+    const titleEl = document.querySelector('.bar-chart-title');
+
+    if (!container) return;
+
+    let keywordsToShow = [];
+
+    if (filters.keywords.length > 0) {
+        // Show selected keywords with their counts
+        titleEl.textContent = 'Selected Keywords by Document Count';
+        keywordsToShow = filters.keywords.map(keyword => {
+            const count = keywordTrie.keywordCounts.get(keyword.toLowerCase()) || 0;
+            return { keyword, count };
+        }).sort((a, b) => b.count - a.count);
+    } else {
+        // Show top 10 keywords
+        titleEl.textContent = 'Top 10 Keywords by Document Count';
+        keywordsToShow = keywordTrie.getAllKeywords().slice(0, 10);
+    }
+
+    if (keywordsToShow.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.9em; font-style: italic;">No keyword data available</div>';
+        return;
+    }
+
+    // Find max count for scaling
+    const maxCount = Math.max(...keywordsToShow.map(k => k.count));
+
+    // Build bar chart HTML
+    const barsHtml = keywordsToShow.map(item => {
+        const percentage = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+        return `
+            <div class="bar-chart-row">
+                <div class="bar-chart-label">${escapeHtml(item.keyword)}</div>
+                <div class="bar-chart-bar-container">
+                    <div class="bar-chart-bar" style="width: ${percentage}%"></div>
+                </div>
+                <div class="bar-chart-count">${item.count}</div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = barsHtml;
+}
 
 function displayAgencies(agencies) {
     const agenciesEl = document.getElementById('agencies');

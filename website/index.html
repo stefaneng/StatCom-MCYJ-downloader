@@ -671,24 +671,115 @@
             background: rgba(255, 255, 255, 0.5);
         }
         
+        /* Keyword Bar Chart Styles */
+        .keyword-bar-chart {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .bar-chart-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .bar-chart-container {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 8px 10px;
+            align-items: center;
+        }
+
+        .bar-chart-row {
+            display: contents;
+        }
+
+        .bar-chart-label {
+            font-size: 0.85em;
+            color: #333;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .bar-chart-bar-container {
+            height: 24px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-chart-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            min-width: 2px;
+        }
+
+        .bar-chart-count {
+            flex: 0 0 45px;
+            font-size: 0.85em;
+            color: #666;
+            text-align: right;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             .agency-info {
                 grid-template-columns: 1fr;
             }
-            
+
             .stat-badge {
                 font-size: 0.85em;
             }
-            
+
             .modal-document-content {
                 margin: 10px;
                 width: calc(100% - 20px);
                 max-height: 95vh;
             }
-            
+
             .page-text {
                 font-size: 0.75em;
                 padding: 15px;
+            }
+
+            /* Mobile-friendly bar chart adjustments */
+            .bar-chart-container {
+                gap: 6px 8px;
+            }
+
+            .bar-chart-label {
+                font-size: 0.75em;
+            }
+
+            .bar-chart-count {
+                font-size: 0.75em;
+            }
+
+            .bar-chart-bar-container {
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bar-chart-container {
+                gap: 5px 6px;
+            }
+
+            .bar-chart-label {
+                font-size: 0.7em;
+            }
+
+            .bar-chart-count {
+                font-size: 0.7em;
+            }
+
+            .bar-chart-bar-container {
+                height: 18px;
             }
         }
     </style>
@@ -753,6 +844,12 @@
                     </div>
                     <div id="selectedKeywords" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px;">
                         <div style="color: #666; font-size: 0.9em; font-style: italic;">No keywords selected</div>
+                    </div>
+
+                    <!-- Keyword Bar Chart -->
+                    <div id="keywordBarChart" class="keyword-bar-chart">
+                        <div class="bar-chart-title">Top Keywords by Document Count</div>
+                        <div id="barChartContainer" class="bar-chart-container"></div>
                     </div>
                 </div>
             </div>
