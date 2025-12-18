@@ -1,6 +1,4 @@
 // Main application logic
-import { initDB, storeQuery, getQueriesForDocument, findExistingQuery, getAllQueries, clearAllQueries, deleteQuery } from './indexedDB.js';
-import { getApiKey } from './encryption.js';
 import { queryDeepSeek } from './apiService.js';
 import { Trie } from './trie.js';
 
@@ -28,9 +26,6 @@ let agencyIdMap = new Map(); // Maps lowercase agency text to original agencyId
 // Load and display data
 async function init() {
     try {
-        // Initialize IndexedDB
-        await initDB();
-        
         // Fetch the agency data
         const response = await fetch('/data/agencies_data.json');
         if (!response.ok) {
@@ -282,19 +277,33 @@ function setupKeywordFilter() {
     });
 }
 
-function setKeywordFilter(keyword) {
+function setKeywordFilter(keyword, displayKeyword = null, skipUrlUpdate = false) {
     filters.keyword = keyword.toLowerCase();
-    renderSelectedKeyword();
+    renderSelectedKeyword(displayKeyword || keyword);
+    
+    // Update URL query string unless we're restoring from URL
+    if (!skipUrlUpdate) {
+        const url = new URL(window.location);
+        url.searchParams.set('keyword', keyword);
+        window.history.pushState({}, '', url);
+    }
+    
     applyFilters();
 }
 
 function removeKeywordFilter() {
     filters.keyword = null;
     renderSelectedKeyword();
+    
+    // Remove keyword from URL query string
+    const url = new URL(window.location);
+    url.searchParams.delete('keyword');
+    window.history.pushState({}, '', url);
+    
     applyFilters();
 }
 
-function renderSelectedKeyword() {
+function renderSelectedKeyword(displayText = null) {
     const container = document.getElementById('selectedKeyword');
     const input = document.getElementById('keywordFilterInput');
 
@@ -306,7 +315,7 @@ function renderSelectedKeyword() {
     } else {
         container.innerHTML = `
             <span class="selected-keyword-badge">
-                ${escapeHtml(filters.keyword)}
+                ${escapeHtml(displayText || filters.keyword)}
                 <button class="remove-keyword-btn" onclick="window.removeKeywordFilter()" title="Remove keyword">✕</button>
             </span>
         `;
@@ -571,23 +580,11 @@ function renderDocuments(documents) {
                         <a href="/document.html?sha=${d.sha256}" target="_blank" class="view-document-btn" style="text-decoration: none; display: inline-block;">
                             📄 View Full Document
                         </a>
-                        <div id="query-count-${d.sha256}" style="margin-top: 8px; font-size: 0.85em; color: #666; font-style: italic;">
-                            <span class="query-count-placeholder" data-sha="${d.sha256}">Loading query history...</span>
-                        </div>
                     </div>
                 ` : ''}
             </div>
         `;
     }).join('');
-    
-    // After rendering, load query counts for each document using microtask
-    queueMicrotask(() => {
-        sortedDocuments.forEach(d => {
-            if (d.sha256) {
-                loadQueryCount(d.sha256);
-            }
-        });
-    });
     
     return `
         <div class="documents-list">
@@ -784,24 +781,28 @@ function showDocumentModal(docData, docMetadata) {
         <div id="aiQuerySection" style="padding: 20px; background: #f8f9fa; border-bottom: 1px solid #ecf0f1;">
             <div style="margin-bottom: 15px;">
                 <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1.1em;">🤖 Ask AI About This Document</h3>
-                <p style="margin: 0; color: #666; font-size: 0.9em;">Query DeepSeek v3.2 about this document. Responses are saved in your browser.</p>
+                <p style="margin: 0; color: #666; font-size: 0.9em;">Query DeepSeek v3.2 about this document. <strong>Note:</strong> Results are displayed but not stored. Your API key is used directly and never saved by this application.</p>
             </div>
             
             <div id="apiKeyPrompt" style="margin-bottom: 15px;">
                 <div style="display: flex; gap: 10px; align-items: flex-start;">
                     <input 
                         type="password" 
-                        id="secretPassInput" 
-                        placeholder="Enter secret password to unlock AI queries..."
+                        id="apiKeyInput" 
+                        placeholder="Enter your OpenRouter API key..."
                         style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+                        autocomplete="off"
                     />
                     <button 
-                        id="unlockApiBtn"
-                        onclick="unlockApiKey()"
+                        id="setApiKeyBtn"
+                        onclick="setApiKey()"
                         style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; white-space: nowrap;"
                     >
-                        🔓 Unlock
+                        ✓ Set Key
                     </button>
+                </div>
+                <div style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                    Get your API key from <a href="https://openrouter.ai/keys" target="_blank" style="color: #3498db;">OpenRouter</a>. Your browser may offer to save this for you.
                 </div>
                 <div id="apiKeyError" style="color: #e74c3c; font-size: 0.9em; margin-top: 8px; display: none;"></div>
             </div>
@@ -830,10 +831,10 @@ function showDocumentModal(docData, docMetadata) {
                 </div>
             </div>
             
-            <!-- Query History -->
-            <div id="queryHistory" style="margin-top: 20px; display: none;">
-                <h4 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1em;">Query History</h4>
-                <div id="queryHistoryList"></div>
+            <!-- Current Query Result -->
+            <div id="queryResult" style="margin-top: 20px; display: none;">
+                <h4 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1em;">Latest Query Result</h4>
+                <div id="queryResultContent"></div>
             </div>
         </div>
         
@@ -847,10 +848,7 @@ function showDocumentModal(docData, docMetadata) {
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
     
-    // Load and display query history
-    loadQueryHistory(docData.sha256);
-    
-    // Check if API key is already unlocked
+    // Check if API key is already set
     if (apiKey) {
         showQueryInterface();
     }
@@ -918,6 +916,7 @@ function openAgencyCard(agencyId) {
 function handleUrlQueryString() {
     const urlParams = new URLSearchParams(window.location.search);
     const agencyId = urlParams.get('agency');
+    const keyword = urlParams.get('keyword');
     
     if (agencyId) {
         // Find the agency
@@ -927,6 +926,11 @@ function handleUrlQueryString() {
             const searchText = `${agency.AgencyName} (${agency.agencyId})`;
             setAgencyFilter(searchText, agencyId, true);
         }
+    }
+    
+    if (keyword) {
+        // Set the keyword filter, skip URL update to avoid circular loop
+        setKeywordFilter(keyword, keyword, true);
     }
 }
 
@@ -1047,75 +1051,42 @@ function escapeHtml(text) {
 }
 
 /**
- * Load and display query count for a document in the agency card
+ * Set the API key from user input
  */
-async function loadQueryCount(sha256) {
-    try {
-        const queries = await getQueriesForDocument(sha256);
-        const placeholder = document.querySelector(`.query-count-placeholder[data-sha="${sha256}"]`);
-        
-        if (placeholder) {
-            if (queries.length === 0) {
-                placeholder.textContent = '🤖 No AI queries yet';
-            } else {
-                placeholder.innerHTML = `🤖 ${queries.length} AI ${queries.length === 1 ? 'query' : 'queries'} saved`;
-                placeholder.style.color = '#3498db';
-                placeholder.style.fontWeight = '500';
-            }
-        }
-    } catch (error) {
-        console.error('Error loading query count:', error);
-        const placeholder = document.querySelector(`.query-count-placeholder[data-sha="${sha256}"]`);
-        if (placeholder) {
-            placeholder.textContent = '';
-        }
-    }
-}
-
-/**
- * Unlock API key with user's secret password
- */
-async function unlockApiKey() {
-    const secretPassInput = document.getElementById('secretPassInput');
+function setApiKey() {
+    const apiKeyInput = document.getElementById('apiKeyInput');
     const apiKeyError = document.getElementById('apiKeyError');
-    const unlockBtn = document.getElementById('unlockApiBtn');
+    const setKeyBtn = document.getElementById('setApiKeyBtn');
     
-    const secretPass = secretPassInput.value.trim();
+    const key = apiKeyInput.value.trim();
     
-    if (!secretPass) {
-        apiKeyError.textContent = 'Please enter the secret password';
+    if (!key) {
+        apiKeyError.textContent = 'Please enter your OpenRouter API key';
         apiKeyError.style.display = 'block';
         return;
     }
     
-    // Disable button and show loading
-    unlockBtn.disabled = true;
-    unlockBtn.textContent = '🔄 Unlocking...';
+    // Basic validation - OpenRouter keys typically start with "sk-"
+    if (!key.startsWith('sk-')) {
+        apiKeyError.textContent = 'API key should start with "sk-". Please check your key.';
+        apiKeyError.style.display = 'block';
+        return;
+    }
+    
     apiKeyError.style.display = 'none';
     
-    try {
-        // Try to decrypt the API key
-        apiKey = await getApiKey(secretPass);
-        
-        // Success - show query interface
-        showQueryInterface();
-        
-        // Clear the password input
-        secretPassInput.value = '';
-        
-    } catch (error) {
-        console.error('Failed to unlock API key:', error);
-        apiKeyError.textContent = 'Invalid password. Please try again.';
-        apiKeyError.style.display = 'block';
-        
-        // Re-enable button
-        unlockBtn.disabled = false;
-        unlockBtn.textContent = '🔓 Unlock';
-    }
+    // Store the API key in memory (not persisted)
+    apiKey = key;
+    
+    // Success - show query interface
+    showQueryInterface();
+    
+    // Clear the input for security
+    apiKeyInput.value = '';
 }
 
 /**
- * Show the query interface after successful API key unlock
+ * Show the query interface after API key is set
  */
 function showQueryInterface() {
     const apiKeyPrompt = document.getElementById('apiKeyPrompt');
@@ -1144,7 +1115,7 @@ async function submitAiQuery() {
     }
     
     if (!apiKey) {
-        statusDiv.innerHTML = '<div style="color: #e74c3c; padding: 10px; background: #fee; border-radius: 4px; margin-top: 10px;">Please unlock API access first</div>';
+        statusDiv.innerHTML = '<div style="color: #e74c3c; padding: 10px; background: #fee; border-radius: 4px; margin-top: 10px;">Please set your API key first</div>';
         return;
     }
     
@@ -1154,22 +1125,6 @@ async function submitAiQuery() {
         statusDiv.innerHTML = '<div style="color: #e74c3c; padding: 10px; background: #fee; border-radius: 4px; margin-top: 10px;">Please enter a query</div>';
         setTimeout(() => statusDiv.innerHTML = '', 3000);
         return;
-    }
-    
-    // Check if this exact query already exists
-    try {
-        const existingQuery = await findExistingQuery(currentDocumentData.sha256, query);
-        if (existingQuery) {
-            // Show the existing result
-            displayQueryResult(existingQuery);
-            statusDiv.textContent = 'Loaded from cache';
-            setTimeout(() => {
-                statusDiv.textContent = '';
-            }, 3000);
-            return;
-        }
-    } catch (error) {
-        console.error('Error checking for existing query:', error);
     }
     
     // Disable input and button
@@ -1186,19 +1141,7 @@ async function submitAiQuery() {
         // Submit query to API
         const result = await queryDeepSeek(apiKey, query, documentText);
         
-        // Store the result in IndexedDB
-        await storeQuery(
-            currentDocumentData.sha256,
-            query,
-            result.response,
-            result.inputTokens,
-            result.outputTokens,
-            result.durationMs,
-            result.cost,
-            result.cacheDiscount
-        );
-        
-        // Display the result
+        // Display the result (not stored)
         displayQueryResult({
             query,
             response: result.response,
@@ -1210,9 +1153,8 @@ async function submitAiQuery() {
             timestamp: Date.now()
         });
         
-        // Clear input and reload history
+        // Clear input
         queryInput.value = '';
-        await loadQueryHistory(currentDocumentData.sha256);
         
         statusDiv.textContent = 'Query completed successfully!';
         statusDiv.style.color = '#27ae60';
@@ -1232,7 +1174,7 @@ async function submitAiQuery() {
 }
 
 /**
- * Display a query result in a modal or section
+ * Display a query result
  */
 function displayQueryResult(queryData) {
     // Calculate estimated cost: $0.25 per million input tokens, $0.38 per million output tokens
@@ -1248,7 +1190,7 @@ function displayQueryResult(queryData) {
     
     // Create a result display element
     const resultHtml = `
-        <div style="background: white; padding: 20px; border: 2px solid #3498db; border-radius: 8px; margin-top: 15px;">
+        <div style="background: white; padding: 20px; border: 2px solid #3498db; border-radius: 8px;">
             <div style="margin-bottom: 15px;">
                 <strong style="color: #2c3e50;">Query:</strong>
                 <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; white-space: pre-wrap;">${escapeHtml(queryData.query)}</div>
@@ -1268,284 +1210,19 @@ function displayQueryResult(queryData) {
         </div>
     `;
     
-    // Find the query history section and prepend the result
-    const historyList = document.getElementById('queryHistoryList');
-    if (historyList) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = resultHtml;
-        historyList.insertBefore(tempDiv.firstElementChild, historyList.firstChild);
-        
-        // Show history section
-        const historySection = document.getElementById('queryHistory');
-        if (historySection) {
-            historySection.style.display = 'block';
-        }
-    }
-}
-
-/**
- * Load and display query history for a document
- */
-async function loadQueryHistory(sha256) {
-    const historySection = document.getElementById('queryHistory');
-    const historyList = document.getElementById('queryHistoryList');
+    // Display in the query result section
+    const resultContent = document.getElementById('queryResultContent');
+    const resultSection = document.getElementById('queryResult');
     
-    if (!historySection || !historyList) {
-        return;
-    }
-    
-    try {
-        const queries = await getQueriesForDocument(sha256);
-        
-        if (queries.length === 0) {
-            historySection.style.display = 'none';
-            return;
-        }
-        
-        // Display queries
-        historyList.innerHTML = queries.map(q => {
-            // Calculate estimated cost: $0.25 per million input tokens, $0.38 per million output tokens
-            const inputCost = (q.inputTokens / 1000000) * 0.25;
-            const outputCost = (q.outputTokens / 1000000) * 0.38;
-            const estimatedCost = inputCost + outputCost;
-            
-            // Build cache discount info if available
-            let cacheInfo = '';
-            if (q.cacheDiscount !== null && q.cacheDiscount !== undefined) {
-                cacheInfo = `<span style="color: #27ae60; font-weight: 600;">💾 Cache: $${q.cacheDiscount.toFixed(6)}</span>`;
-            }
-            
-            return `
-                <div style="background: white; padding: 15px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px;">
-                    <div style="margin-bottom: 10px;">
-                        <strong style="color: #2c3e50;">Query:</strong>
-                        <div style="background: #f8f9fa; padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.9em; white-space: pre-wrap;">${escapeHtml(q.query)}</div>
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <strong style="color: #2c3e50;">Response:</strong>
-                        <div style="background: #e8f4f8; padding: 10px; margin-top: 5px; border-radius: 4px; font-size: 0.9em; white-space: pre-wrap; line-height: 1.5;">${escapeHtml(q.response)}</div>
-                    </div>
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 0.8em; color: #666;">
-                        <span>📊 ${q.inputTokens} in / ${q.outputTokens} out</span>
-                        <span>⏱️ ${(q.durationMs / 1000).toFixed(2)}s</span>
-                        <span>💰 ~$${estimatedCost.toFixed(6)}</span>
-                        ${cacheInfo}
-                        <span>🕐 ${new Date(q.timestamp).toLocaleString()}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        historySection.style.display = 'block';
-        
-    } catch (error) {
-        console.error('Error loading query history:', error);
+    if (resultContent && resultSection) {
+        resultContent.innerHTML = resultHtml;
+        resultSection.style.display = 'block';
     }
 }
 
 // Make AI query functions available globally
-window.unlockApiKey = unlockApiKey;
+window.setApiKey = setApiKey;
 window.submitAiQuery = submitAiQuery;
-
-/**
- * Open the query manager modal
- */
-async function openQueryManager() {
-    const modal = document.getElementById('queryManagerModal');
-    modal.style.display = 'flex';
-    
-    // Prevent body scroll when modal is open
-    document.body.style.overflow = 'hidden';
-    
-    // Load and display all queries
-    await loadAllQueriesForManager();
-}
-
-/**
- * Close the query manager modal
- */
-function closeQueryManager() {
-    const modal = document.getElementById('queryManagerModal');
-    if (modal) {
-        modal.style.display = 'none';
-        
-        // Re-enable body scroll
-        document.body.style.overflow = '';
-    }
-}
-
-/**
- * Load and display all queries in the manager
- */
-async function loadAllQueriesForManager() {
-    const statDiv = document.getElementById('queryManagerStats');
-    const listDiv = document.getElementById('queryManagerList');
-    const clearBtn = document.getElementById('clearAllQueriesBtn');
-    
-    try {
-        const queries = await getAllQueries();
-        
-        // Update stats
-        statDiv.textContent = `Total queries: ${queries.length}`;
-        
-        // Enable/disable clear button
-        clearBtn.disabled = queries.length === 0;
-        
-        if (queries.length === 0) {
-            listDiv.innerHTML = '<div class="no-queries-message">No AI queries stored yet. Start by asking questions about documents!</div>';
-            return;
-        }
-        
-        // Group queries by document for better organization
-        const queriesByDoc = {};
-        queries.forEach(q => {
-            if (!queriesByDoc[q.sha256]) {
-                queriesByDoc[q.sha256] = [];
-            }
-            queriesByDoc[q.sha256].push(q);
-        });
-        
-        // Display queries
-        let html = '';
-        for (const [sha, docQueries] of Object.entries(queriesByDoc)) {
-            html += `<div style="margin-bottom: 30px;">`;
-            html += `<h3 style="color: #2c3e50; font-size: 1em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3498db;">`;
-            html += `📄 Document: <a href="?sha=${encodeURIComponent(sha)}" class="query-manager-item-doc" style="color: #3498db; text-decoration: none; cursor: pointer;">${escapeHtml(sha)}</a>`;
-            html += `<span style="color: #666; font-size: 0.9em; margin-left: 10px;">(${docQueries.length} ${docQueries.length === 1 ? 'query' : 'queries'})</span>`;
-            html += `</h3>`;
-            
-            docQueries.forEach(q => {
-                const date = new Date(q.timestamp).toLocaleString();
-                
-                // Calculate estimated cost: $0.25 per million input tokens, $0.38 per million output tokens
-                const inputCost = (q.inputTokens / 1000000) * 0.25;
-                const outputCost = (q.outputTokens / 1000000) * 0.38;
-                const estimatedCost = inputCost + outputCost;
-                
-                // Build cache discount info if available
-                let cacheInfo = '';
-                if (q.cacheDiscount !== null && q.cacheDiscount !== undefined) {
-                    cacheInfo = `<span style="color: #27ae60; font-weight: 600;">💾 Cache Discount: $${q.cacheDiscount.toFixed(6)}</span>`;
-                }
-                
-                html += `
-                    <div class="query-manager-item">
-                        <div class="query-manager-item-header">
-                            <div class="query-manager-item-meta">
-                                🕐 ${date}
-                            </div>
-                            <button class="delete-query-btn" onclick="deleteQueryFromManager(${q.id})">
-                                🗑️ Delete
-                            </button>
-                        </div>
-                        <div>
-                            <strong style="color: #2c3e50;">Query:</strong>
-                            <div class="query-manager-query">${escapeHtml(q.query)}</div>
-                        </div>
-                        <div>
-                            <strong style="color: #2c3e50;">Response:</strong>
-                            <div class="query-manager-response">${escapeHtml(q.response)}</div>
-                        </div>
-                        <div class="query-manager-metadata">
-                            <span>📊 Input: ${q.inputTokens} tokens</span>
-                            <span>📊 Output: ${q.outputTokens} tokens</span>
-                            <span>⏱️ Duration: ${(q.durationMs / 1000).toFixed(2)}s</span>
-                            <span>💰 Estimated Cost: $${estimatedCost.toFixed(6)}</span>
-                            ${cacheInfo}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-        }
-        
-        listDiv.innerHTML = html;
-        
-    } catch (error) {
-        console.error('Error loading queries:', error);
-        listDiv.innerHTML = `<div class="no-queries-message" style="color: #e74c3c;">Error loading queries: ${escapeHtml(error.message)}</div>`;
-    }
-}
-
-/**
- * Delete a specific query
- */
-async function deleteQueryFromManager(queryId) {
-    if (!confirm('Are you sure you want to delete this query?')) {
-        return;
-    }
-    
-    try {
-        await deleteQuery(queryId);
-        
-        // Reload the query list
-        await loadAllQueriesForManager();
-        
-        // Also refresh any open document's query history
-        if (currentDocumentData) {
-            await loadQueryHistory(currentDocumentData.sha256);
-        }
-        
-        // Refresh query counts in agency cards
-        const placeholders = document.querySelectorAll('.query-count-placeholder');
-        placeholders.forEach(placeholder => {
-            const sha = placeholder.dataset.sha;
-            if (sha) {
-                loadQueryCount(sha);
-            }
-        });
-        
-    } catch (error) {
-        console.error('Error deleting query:', error);
-        alert(`Failed to delete query: ${error.message}`);
-    }
-}
-
-/**
- * Confirm and clear all queries
- */
-async function confirmClearAllQueries() {
-    const queries = await getAllQueries();
-    
-    if (queries.length === 0) {
-        return;
-    }
-    
-    const confirmation = confirm(
-        `Are you sure you want to delete all ${queries.length} queries?\n\n` +
-        'This action cannot be undone. All your AI query history will be permanently removed from your browser.'
-    );
-    
-    if (!confirmation) {
-        return;
-    }
-    
-    try {
-        await clearAllQueries();
-        
-        // Reload the query list
-        await loadAllQueriesForManager();
-        
-        // Also refresh any open document's query history
-        if (currentDocumentData) {
-            await loadQueryHistory(currentDocumentData.sha256);
-        }
-        
-        // Refresh all query counts in agency cards
-        const placeholders = document.querySelectorAll('.query-count-placeholder');
-        placeholders.forEach(placeholder => {
-            const sha = placeholder.dataset.sha;
-            if (sha) {
-                loadQueryCount(sha);
-            }
-        });
-        
-    } catch (error) {
-        console.error('Error clearing all queries:', error);
-        alert(`Failed to clear queries: ${error.message}`);
-    }
-}
 
 /**
  * Set the commit hash at the bottom of the page
@@ -1560,11 +1237,6 @@ function setCommitHash() {
     }
 }
 
-// Make query manager functions available globally
-window.openQueryManager = openQueryManager;
-window.closeQueryManager = closeQueryManager;
-window.deleteQueryFromManager = deleteQueryFromManager;
-window.confirmClearAllQueries = confirmClearAllQueries;
-
 // Initialize the application
 init();
+

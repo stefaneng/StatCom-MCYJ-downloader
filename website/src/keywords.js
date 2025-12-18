@@ -71,9 +71,10 @@ function renderKeywordBarChart() {
     // Build bar chart HTML for all keywords
     const barsHtml = allKeywords.map(item => {
         const percentage = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+        const encodedKeyword = encodeURIComponent(item.keyword);
         return `
             <div class="bar-chart-row">
-                <div class="bar-chart-label">${escapeHtml(item.keyword)}</div>
+                <a href="/?keyword=${encodedKeyword}" class="bar-chart-label" title="View documents with keyword: ${escapeHtml(item.keyword)}">${escapeHtml(item.keyword)}</a>
                 <div class="bar-chart-bar-container">
                     <div class="bar-chart-bar" style="width: ${percentage}%"></div>
                 </div>

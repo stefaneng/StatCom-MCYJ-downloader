@@ -190,8 +190,11 @@ function displayDocument(docData, docMetadata) {
                 ` : ''}
             ` : ''}
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
-                <button class="copy-link-btn" onclick="copyDocumentLink()" title="Copy link to this document">
+                <button class="copy-link-btn" onclick="copyDocumentLink(event)" title="Copy link to this document">
                     🔗 Copy URL to this document
+                </button>
+                <button class="copy-link-btn" onclick="copyDocumentText(event)" title="Copy full document text to clipboard for use with your own AI chatbot">
+                    📋 Copy Document Text
                 </button>
                 ${docMetadata && docMetadata.agencyId ? `
                     <a href="/?agency=${encodeURIComponent(docMetadata.agencyId)}" class="copy-link-btn" style="text-decoration: none;">
@@ -221,15 +224,28 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function copyDocumentLink() {
+function copyDocumentLink(event) {
     const url = window.location.href;
+    const btn = event?.target;
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(() => {
-            alert('Link copied to clipboard!');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
         }).catch(err => {
             console.error('Failed to copy link:', err);
-            alert('Failed to copy link to clipboard');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
         });
     } else {
         // Fallback
@@ -241,10 +257,84 @@ function copyDocumentLink() {
         textarea.select();
         try {
             document.execCommand('copy');
-            alert('Link copied to clipboard!');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
         } catch (err) {
             console.error('Failed to copy link:', err);
-            alert('Failed to copy link to clipboard');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+}
+
+function copyDocumentText(event) {
+    if (!currentDocumentData || !currentDocumentData.pages) {
+        console.error('Document not loaded');
+        return;
+    }
+    
+    const btn = event?.target;
+    
+    // Concatenate all pages with double newlines between them
+    const fullText = currentDocumentData.pages.join('\n\n');
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullText).then(() => {
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }
+        }).catch(err => {
+            console.error('Failed to copy document text:', err);
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
+        });
+    } else {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = fullText;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }
+        } catch (err) {
+            console.error('Failed to copy document text:', err);
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
         } finally {
             document.body.removeChild(textarea);
         }
@@ -284,6 +374,7 @@ function setCommitHash() {
 
 // Make functions available globally
 window.copyDocumentLink = copyDocumentLink;
+window.copyDocumentText = copyDocumentText;
 window.loadDocumentFromSearch = loadDocumentFromSearch;
 
 // Initialize the page

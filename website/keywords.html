@@ -113,6 +113,13 @@
             color: #333;
             text-align: right;
             word-break: break-word;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .bar-chart-label:hover {
+            color: #3498db;
+            text-decoration: underline;
         }
 
         .bar-chart-bar-container {
@@ -192,7 +199,8 @@
                 <h2>🏷️ All Keywords by Document Count</h2>
                 <p class="keywords-description">
                     This page shows all keywords extracted from Special Investigation Reports, 
-                    sorted by the number of documents containing each keyword.
+                    sorted by the number of documents containing each keyword. Note that documents may contain multiple keywords.
+                    Click on any keyword to view documents with that keyword.
                 </p>
             </div>
             
