@@ -74,7 +74,7 @@ function renderKeywordBarChart() {
         const encodedKeyword = encodeURIComponent(item.keyword);
         return `
             <div class="bar-chart-row">
-                <a href="/?keyword=${encodedKeyword}" class="bar-chart-label" title="View documents with keyword: ${escapeHtml(item.keyword)}">${escapeHtml(item.keyword)}</a>
+                <a href="/?keywords=${encodedKeyword}" class="bar-chart-label" title="View documents with keyword: ${escapeHtml(item.keyword)}">${escapeHtml(item.keyword)}</a>
                 <div class="bar-chart-bar-container">
                     <div class="bar-chart-bar" style="width: ${percentage}%"></div>
                 </div>

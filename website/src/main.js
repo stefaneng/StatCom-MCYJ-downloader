@@ -14,7 +14,7 @@ let apiKey = null; // Store decrypted API key
 // Filter state
 let filters = {
     sirOnly: true, // Enable SIR-only by default
-    keyword: null, // Single selected keyword
+    keywords: [], // Multiple selected keywords (OR semantics)
     agency: null // Single selected agency (agencyId)
 };
 
@@ -116,12 +116,14 @@ function applyFilters() {
                 return false;
             }
             
-            // Filter by keyword (single selection)
-            if (filters.keyword) {
+            // Filter by keywords (OR semantics - match if document contains ANY selected keyword)
+            if (filters.keywords.length > 0) {
                 const docKeywords = d.sir_violation_level?.keywords || [];
                 const docKeywordsLower = docKeywords.map(k => k.toLowerCase());
-                const hasKeyword = docKeywordsLower.includes(filters.keyword.toLowerCase());
-                if (!hasKeyword) {
+                const hasAnyKeyword = filters.keywords.some(filterKeyword => 
+                    docKeywordsLower.includes(filterKeyword.toLowerCase())
+                );
+                if (!hasAnyKeyword) {
                     return false;
                 }
             }
@@ -219,11 +221,6 @@ function setupKeywordFilter() {
     keywordInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
         
-        // If a keyword is already selected, hide input and show selected
-        if (filters.keyword) {
-            return;
-        }
-        
         if (query.length < 2) {
             keywordSuggestions.style.display = 'none';
             return;
@@ -248,7 +245,7 @@ function setupKeywordFilter() {
         keywordSuggestions.querySelectorAll('.keyword-suggestion').forEach(div => {
             div.addEventListener('click', () => {
                 const keyword = div.dataset.keyword;
-                setKeywordFilter(keyword);
+                addKeywordFilter(keyword);
                 keywordInput.value = '';
                 keywordSuggestions.style.display = 'none';
             });
@@ -269,7 +266,7 @@ function setupKeywordFilter() {
             const firstSuggestion = keywordSuggestions.querySelector('.keyword-suggestion');
             if (firstSuggestion) {
                 const keyword = firstSuggestion.dataset.keyword;
-                setKeywordFilter(keyword);
+                addKeywordFilter(keyword);
                 keywordInput.value = '';
                 keywordSuggestions.style.display = 'none';
             }
@@ -277,49 +274,89 @@ function setupKeywordFilter() {
     });
 }
 
-function setKeywordFilter(keyword, displayKeyword = null, skipUrlUpdate = false) {
-    filters.keyword = keyword.toLowerCase();
-    renderSelectedKeyword(displayKeyword || keyword);
+function addKeywordFilter(keyword) {
+    const keywordLower = keyword.toLowerCase();
     
-    // Update URL query string unless we're restoring from URL
-    if (!skipUrlUpdate) {
-        const url = new URL(window.location);
-        url.searchParams.set('keyword', keyword);
-        window.history.pushState({}, '', url);
+    // Check if keyword is already in the list
+    if (!filters.keywords.some(k => k.toLowerCase() === keywordLower)) {
+        filters.keywords.push(keyword);
+        renderSelectedKeywords();
+        updateUrlWithKeywords();
+        applyFilters();
     }
-    
+}
+
+function removeKeywordFilter(keyword) {
+    const keywordLower = keyword.toLowerCase();
+    filters.keywords = filters.keywords.filter(k => k.toLowerCase() !== keywordLower);
+    renderSelectedKeywords();
+    updateUrlWithKeywords();
     applyFilters();
 }
 
-function removeKeywordFilter() {
-    filters.keyword = null;
-    renderSelectedKeyword();
-    
-    // Remove keyword from URL query string
+function clearAllKeywords() {
+    filters.keywords = [];
+    renderSelectedKeywords();
+    updateUrlWithKeywords();
+    applyFilters();
+}
+
+function updateUrlWithKeywords() {
     const url = new URL(window.location);
     url.searchParams.delete('keyword');
-    window.history.pushState({}, '', url);
+    url.searchParams.delete('keywords');
     
-    applyFilters();
+    if (filters.keywords.length > 0) {
+        // Use comma-separated keywords in a single parameter
+        url.searchParams.set('keywords', filters.keywords.join(','));
+    }
+    
+    window.history.pushState({}, '', url);
 }
 
-function renderSelectedKeyword(displayText = null) {
+function renderSelectedKeywords() {
     const container = document.getElementById('selectedKeyword');
     const input = document.getElementById('keywordFilterInput');
 
     if (!container || !input) return;
 
-    if (!filters.keyword) {
-        container.innerHTML = '<div style="color: #666; font-size: 0.9em; font-style: italic;">No keyword selected</div>';
-        input.style.display = 'block';
+    if (filters.keywords.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.9em; font-style: italic;">No keywords selected</div>';
     } else {
-        container.innerHTML = `
+        // Show "OR" label prominently when multiple keywords are selected
+        const orLabel = filters.keywords.length > 1 
+            ? '<div style="color: #e67e22; font-weight: 600; font-size: 0.85em; margin-bottom: 6px;">🔍 Showing documents matching ANY of these keywords (OR):</div>'
+            : '';
+        
+        const badges = filters.keywords.map(kw => `
             <span class="selected-keyword-badge">
-                ${escapeHtml(displayText || filters.keyword)}
-                <button class="remove-keyword-btn" onclick="window.removeKeywordFilter()" title="Remove keyword">✕</button>
+                ${escapeHtml(kw)}
+                <button class="remove-keyword-btn" data-keyword="${escapeHtml(kw)}" title="Remove keyword">✕</button>
             </span>
-        `;
-        input.style.display = 'none';
+        `).join('');
+        
+        const clearAllBtn = filters.keywords.length > 1 
+            ? '<button id="clearAllKeywordsBtn" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 16px; font-size: 0.85em; cursor: pointer; margin-left: 6px;">Clear All</button>'
+            : '';
+        
+        container.innerHTML = orLabel + '<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">' + badges + clearAllBtn + '</div>';
+        
+        // Attach event listeners after rendering
+        container.querySelectorAll('.remove-keyword-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const keyword = btn.dataset.keyword;
+                removeKeywordFilter(keyword);
+            });
+        });
+        
+        const clearAllButton = document.getElementById('clearAllKeywordsBtn');
+        if (clearAllButton) {
+            clearAllButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearAllKeywords();
+            });
+        }
     }
 }
 
@@ -444,7 +481,6 @@ function renderSelectedAgency(agencyText) {
 }
 
 // Export functions to window for inline onclick handlers
-window.removeKeywordFilter = removeKeywordFilter;
 window.removeAgencyFilter = removeAgencyFilter;
 
 function displayAgencies(agencies) {
@@ -916,7 +952,8 @@ function openAgencyCard(agencyId) {
 function handleUrlQueryString() {
     const urlParams = new URLSearchParams(window.location.search);
     const agencyId = urlParams.get('agency');
-    const keyword = urlParams.get('keyword');
+    const keywordsParam = urlParams.get('keywords');
+    const legacyKeyword = urlParams.get('keyword'); // Support old single keyword param
     
     if (agencyId) {
         // Find the agency
@@ -928,9 +965,19 @@ function handleUrlQueryString() {
         }
     }
     
-    if (keyword) {
-        // Set the keyword filter, skip URL update to avoid circular loop
-        setKeywordFilter(keyword, keyword, true);
+    // Handle multiple keywords (new format)
+    // URLSearchParams automatically decodes URL-encoded values
+    if (keywordsParam) {
+        const keywords = keywordsParam.split(',').map(k => k.trim()).filter(k => k.length > 0);
+        filters.keywords = keywords;
+        renderSelectedKeywords();
+        applyFilters();
+    }
+    // Handle legacy single keyword (old format)
+    else if (legacyKeyword) {
+        filters.keywords = [legacyKeyword];
+        renderSelectedKeywords();
+        applyFilters();
     }
 }
 
