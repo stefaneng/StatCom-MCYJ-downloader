@@ -42,7 +42,8 @@ A lightweight web dashboard built with Vite to display Michigan Child Welfare ag
 Run the build script which:
 1. Generates document info CSV from parquet files
 2. Creates JSON data files from the document info CSV
-3. Builds the static website
+3. Applies keyword reduction to consolidate violation keywords
+4. Builds the static website
 
 ```bash
 ./build.sh
@@ -56,7 +57,17 @@ The site is configured for automatic deployment on Netlify. The build process:
 
 1. Runs `pdf_parsing/extract_document_info.py` to generate document info from parquet files
 2. Runs `generate_website_data.py` to create JSON files from document info CSV
-3. Builds the static site with Vite
+3. Applies keyword reduction using `violation_curation_keyword_reduction.csv` to consolidate similar violation keywords
+4. Builds the static site with Vite
+
+### Keyword Reduction
+
+The build process applies keyword reduction to consolidate similar violation keywords for better consistency. For example:
+- "inadequate supervision" and "lack of supervision" → "supervision failure"
+- "unsafe de-escalation" → "de-escalation failure"
+- "paperwork delay" → "paperwork error"
+
+This is configured through `pdf_parsing/violation_curation_keyword_reduction.csv` and is automatically applied during the build. The original data in `sir_violation_levels.csv` remains unchanged.
 
 ### Netlify Configuration
 
@@ -72,6 +83,8 @@ The dashboard uses data from:
 
 - **Parquet Files**: PDF text extracts in `../pdf_parsing/parquet_files/`
 - **Document Info CSV**: Generated from parquet files via `pdf_parsing/extract_document_info.py`
+- **SIR Violation Levels CSV**: Contains severity levels and keywords for Special Investigation Reports
+- **Keyword Reduction CSV**: Maps original keywords to consolidated versions for consistency
 
 The dashboard derives all agency information directly from the document data (no separate facility metadata required).
 

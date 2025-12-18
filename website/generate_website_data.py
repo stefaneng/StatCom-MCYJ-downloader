@@ -13,6 +13,9 @@ import os
 import sys
 from collections import defaultdict
 from pathlib import Path
+from typing import Dict, Optional
+
+from keyword_reduction import load_keyword_reduction_map, apply_keyword_reduction
 
 
 def load_sir_summaries_csv(csv_path):
@@ -38,7 +41,7 @@ def load_sir_summaries_csv(csv_path):
     return summaries_by_sha
 
 
-def load_sir_violation_levels_csv(csv_path):
+def load_sir_violation_levels_csv(csv_path, keyword_map: Optional[Dict[str, str]] = None):
     """Load SIR violation levels CSV and create a lookup by SHA256."""
     levels_by_sha = {}
     
@@ -62,6 +65,10 @@ def load_sir_violation_levels_csv(csv_path):
                 except (json.JSONDecodeError, ValueError):
                     print(f"Warning: Failed to parse keywords for {sha256}")
                     keywords = []
+            
+            # Apply keyword reduction if map is provided
+            if keyword_map:
+                keywords = apply_keyword_reduction(keywords, keyword_map)
             
             levels_by_sha[sha256] = {
                 'level': row.get('level', ''),
@@ -118,11 +125,17 @@ def load_document_info_csv(csv_path, sir_summaries=None, sir_violation_levels=No
     return documents_by_agency, agency_names
 
 
-def generate_json_files(document_csv, output_dir, sir_summaries_csv=None, sir_violation_levels_csv=None):
+def generate_json_files(document_csv, output_dir, sir_summaries_csv=None, sir_violation_levels_csv=None, keyword_reduction_csv=None):
     """Generate JSON files for the website."""
     
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
+    
+    # Load keyword reduction map if provided
+    keyword_map = {}
+    if keyword_reduction_csv:
+        print("Loading keyword reduction mappings...")
+        keyword_map = load_keyword_reduction_map(keyword_reduction_csv)
     
     # Load SIR summaries if provided
     sir_summaries = {}
@@ -135,7 +148,7 @@ def generate_json_files(document_csv, output_dir, sir_summaries_csv=None, sir_vi
     sir_violation_levels = {}
     if sir_violation_levels_csv:
         print("Loading SIR violation levels data...")
-        sir_violation_levels = load_sir_violation_levels_csv(sir_violation_levels_csv)
+        sir_violation_levels = load_sir_violation_levels_csv(sir_violation_levels_csv, keyword_map)
         print(f"Loaded {len(sir_violation_levels)} SIR violation levels")
     
     # Load document info data
@@ -205,6 +218,10 @@ def main():
         help="Path to SIR violation levels CSV file (optional)"
     )
     parser.add_argument(
+        "--keyword-reduction-csv",
+        help="Path to keyword reduction CSV file (optional)"
+    )
+    parser.add_argument(
         "--output-dir",
         default="public/data",
         help="Output directory for JSON files"
@@ -221,7 +238,8 @@ def main():
         args.document_csv,
         args.output_dir,
         args.sir_summaries_csv,
-        args.sir_violation_levels_csv
+        args.sir_violation_levels_csv,
+        args.keyword_reduction_csv
     )
 
 

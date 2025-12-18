@@ -18,6 +18,8 @@ from typing import Dict, Optional
 
 import pandas as pd
 
+from keyword_reduction import load_keyword_reduction_map, apply_keyword_reduction
+
 # Set up logger
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,7 @@ def load_sir_summaries(sir_summaries_csv: str) -> Dict[str, Dict]:
     return summaries_by_sha
 
 
-def load_sir_violation_levels(sir_violation_levels_csv: str) -> Dict[str, Dict]:
+def load_sir_violation_levels(sir_violation_levels_csv: str, keyword_map: Optional[Dict[str, str]] = None) -> Dict[str, Dict]:
     """Load SIR violation levels CSV and create a lookup by SHA256."""
     levels_by_sha = {}
     
@@ -70,6 +72,10 @@ def load_sir_violation_levels(sir_violation_levels_csv: str) -> Dict[str, Dict]:
                 except (json.JSONDecodeError, ValueError):
                     logger.warning(f"Failed to parse keywords for {sha256}: {keywords_str}")
                     keywords = []
+            
+            # Apply keyword reduction if map is provided
+            if keyword_map:
+                keywords = apply_keyword_reduction(keywords, keyword_map)
             
             levels_by_sha[sha256] = {
                 'level': row.get('level', ''),
@@ -108,7 +114,7 @@ def load_document_metadata(document_csv: str) -> Dict[str, Dict]:
     return metadata_by_sha
 
 
-def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None, sir_summaries_csv: Optional[str] = None, sir_violation_levels_csv: Optional[str] = None) -> None:
+def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Optional[str] = None, sir_summaries_csv: Optional[str] = None, sir_violation_levels_csv: Optional[str] = None, keyword_reduction_csv: Optional[str] = None) -> None:
     """Export each parquet row to a separate JSON file."""
     parquet_path = Path(parquet_dir)
     output_path = Path(output_dir)
@@ -120,14 +126,20 @@ def export_parquet_to_json(parquet_dir: str, output_dir: str, document_csv: Opti
     # Create output directory
     output_path.mkdir(parents=True, exist_ok=True)
     
+    # Load keyword reduction map if provided
+    keyword_map = {}
+    if keyword_reduction_csv:
+        logger.info("Loading keyword reduction mappings...")
+        keyword_map = load_keyword_reduction_map(keyword_reduction_csv)
+    
     # Load document metadata if provided
     document_metadata = load_document_metadata(document_csv) if document_csv else {}
     
     # Load SIR summaries if provided
     sir_summaries = load_sir_summaries(sir_summaries_csv) if sir_summaries_csv else {}
     
-    # Load SIR violation levels if provided
-    sir_violation_levels = load_sir_violation_levels(sir_violation_levels_csv) if sir_violation_levels_csv else {}
+    # Load SIR violation levels if provided (with keyword reduction)
+    sir_violation_levels = load_sir_violation_levels(sir_violation_levels_csv, keyword_map) if sir_violation_levels_csv else {}
     
     # Find all parquet files
     parquet_files = list(parquet_path.glob("*.parquet"))
@@ -259,6 +271,11 @@ def main():
         help="Path to SIR violation levels CSV file (default: ../pdf_parsing/sir_violation_levels.csv)"
     )
     parser.add_argument(
+        "--keyword-reduction-csv",
+        default=str(script_dir / "../pdf_parsing/violation_curation_keyword_reduction.csv"),
+        help="Path to keyword reduction CSV file (default: ../pdf_parsing/violation_curation_keyword_reduction.csv)"
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose debug output"
@@ -272,7 +289,7 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     
-    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv, args.sir_summaries_csv, args.sir_violation_levels_csv)
+    export_parquet_to_json(args.parquet_dir, args.output_dir, args.document_csv, args.sir_summaries_csv, args.sir_violation_levels_csv, args.keyword_reduction_csv)
 
 
 if __name__ == "__main__":
