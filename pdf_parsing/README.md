@@ -1,82 +1,93 @@
-# PDF Text Extraction Tool
+# PDF Parsing
 
-A Python script that extracts text from PDF files using [pdfplumber](https://github.com/jsvine/pdfplumber) and saves the results to compressed Parquet files.
+This directory contains tools for processing PDF documents from Michigan child welfare licensing (MCYJ) and extracting structured data from them.
 
-## Overview
+## Directory Structure
 
-This script facilitates the production of a directory of parquet files that store text versions of each file in a directory of pdfs (such as that downloaded by ../ingestion).  We assume the pdf directory is continually being updated, and, as such, the script may need to be run again and again.  Each time the script it run, it:
-
-- **Looks at the parquet files storing the text information we already have**.  These parquet files store both sha256 hashes of the original pdfs and the text that was extracted.
-- **Looks at the sha256 of files in the directory**.
-- **Figures out files that still need to be processed**.
-- **Processes them** into a new parquet file that is added into the parquet directory.
-
-By default the text information is stored in parquet_files, as that is where they are stored in this git repository for this project.  For this project's use, we find 500 pdf files boil down to about 1.5 megabytes.
-
-## Usage
-
-**Note**: All commands should be run from the project root directory.
-
-### Basic Usage
-
-Extract text from all PDFs in a directory:
-
-```bash
-uv run pdf_parsing/extract_pdf_text.py --pdf-dir /path/to/pdf/directory
+```
+pdf_parsing/
+├── parquet_files/           # Extracted PDF text stored as parquet files
+├── document_info.csv        # Structured metadata extracted from documents
+├── sir_summaries.csv        # AI-generated summaries for Special Investigation Reports
+├── sir_violation_levels.csv # AI-classified severity levels for SIR violations
+├── sir_theming.txt          # Criteria for categorizing SIR severity levels
+├── violation_curation_keyword_reduction.csv  # Keyword data for violation curation
+└── [Python scripts]         # Processing and analysis tools
 ```
 
-This creates timestamped Parquet files in `pdf_parsing/parquet_files/` by default (e.g., `20251103_143052_pdf_text.parquet` with `%Y%m%d_%H%M%S` timestamp).
+## Scripts
 
-### Custom Output Directory
+### Core Processing
 
-Specify a custom output directory:
+| Script | Purpose |
+|--------|---------|
+| `extract_pdf_text.py` | Extracts text from PDF files using pdfplumber and saves to parquet files. Each PDF is identified by its SHA256 hash. |
+| `extract_document_info.py` | Parses parquet files to extract structured document metadata (agency ID, name, dates, document titles) into CSV. |
 
-```bash
-uv run pdf_parsing/extract_pdf_text.py --pdf-dir /path/to/pdf/directory --parquet-dir /path/to/output
-```
+### AI-Powered Analysis
 
-### Limit Processing
+| Script | Purpose |
+|--------|---------|
+| `update_sir_summaries.py` | Generates AI summaries for Special Investigation Reports using OpenRouter API (DeepSeek model). |
+| `update_violation_levels.py` | Classifies SIR violations into severity levels (low/moderate/severe) using AI, based on criteria in `sir_theming.txt`. |
 
-Process only a limited number of PDFs (useful for testing or incremental processing):
+### Utilities
 
-```bash
-uv run pdf_parsing/extract_pdf_text.py --pdf-dir /path/to/pdf/directory --limit 100
-```
+| Script | Purpose |
+|--------|---------|
+| `check_unique_hashes.py` | Verifies all SHA256 hashes across parquet files are unique (no duplicate documents). |
+| `investigate_sha.py` | Inspects a specific document by its SHA256 hash for debugging. |
+| `investigate_violations.py` | Displays random documents with their extracted info for quality checking. |
 
-This will process at most 100 PDFs. Note that already-processed PDFs (skipped files) don't count toward the limit.
+## Data Files
 
-### Spot Check
+### `parquet_files/`
 
-Verify existing extractions by re-processing N random PDFs:
+Contains timestamped parquet files (e.g., `20251103_133347_pdf_text.parquet`) with extracted PDF text. Each record has:
+- `sha256` - SHA256 hash of the original PDF
+- `text` - List of strings, one per page
+- `dateprocessed` - ISO 8601 timestamp
 
-```bash
-uv run pdf_parsing/extract_pdf_text.py --pdf-dir /path/to/pdf/directory --spot-check 10
-```
+### `document_info.csv`
 
-This will:
-- Load existing records from all Parquet files in the output directory
-- Randomly select up to 10 PDFs that have been previously processed
-- Re-extract text from those PDFs
-- Compare the newly extracted text with the stored text
-- Report pass/fail for each PDF
+Structured metadata extracted from documents:
+- `agency_id` - License number (e.g., CB250296641)
+- `agency_name` - Name of the licensed agency
+- `date` - Inspection or report date
+- `document_title` - Type of document (e.g., "Special Investigation Report", "Renewal Inspection Report")
+- `is_special_investigation` - Boolean flag for SIR documents
+- `sha256` - Link back to source document
+- `date_processed` - When the PDF was processed
 
-Spot checking exits with code 0 if all checks pass, or code 1 if any fail.
+### `sir_summaries.csv`
 
-## Output Format
+AI-generated summaries for Special Investigation Reports:
+- Document identifiers (sha256, agency_id, agency_name, document_title, date)
+- `response` - AI-generated summary
+- `violation` - Whether violations were substantiated ("y" or "n")
+- API usage metrics (tokens, cost, duration)
 
-The script outputs compressed Parquet files with the following schema:
+### `sir_violation_levels.csv`
 
-### Fields
+AI-classified severity levels for SIRs where violations were substantiated:
+- Document identifiers
+- `level` - Severity classification: "low", "moderate", or "severe"
+- `justification` - Explanation of the classification
+- `keywords` - JSON list of relevant keywords
 
-- **`sha256`** (string): SHA256 hash of the PDF file (hex digest)
-- **`dateprocessed`** (string): ISO 8601 timestamp of when the PDF was processed
-- **`text`** (list of strings): Text content, one string per page
+### `sir_theming.txt`
 
-### File Naming
+Defines the criteria for categorizing SIR severity:
+- **Severe**: Safety/violence, restraint/seclusion, medical/mental health concerns
+- **Moderate**: Administrative/rights issues, supervision failures, non-violent staff misconduct
+- **Low**: Paperwork issues, non-safety policy compliance, non-hazardous facility conditions
 
-Each processing run creates a new file named: `YYYYMMDD_HHMMSS_pdf_text.parquet`
+### `violation_curation_keyword_reduction.csv`
 
-Example: `20251103_143052_pdf_text.parquet`
+Maps raw violation keywords to consolidated terms for consistency in analysis and display. Contains:
+- `original_keyword` - Raw keyword from AI classification
+- `reduced_keyword` - Normalized/consolidated keyword (empty if keyword should be removed)
+- `frequency` - How often this keyword appears in the data
 
 ## Document Info Extraction Tool
 

@@ -40,10 +40,11 @@ A lightweight web dashboard built with Vite to display Michigan Child Welfare ag
 ### Building for Production
 
 Run the build script which:
-1. Generates document info CSV from parquet files
-2. Creates JSON data files from the document info CSV
+1. Installs Python dependencies from pyproject.toml
+2. Generates JSON data files from CSVs (document info, SIR summaries, violation levels)
 3. Applies keyword reduction to consolidate violation keywords
-4. Builds the static website
+4. Exports parquet documents to individual JSON files
+5. Builds the static website with Vite
 
 ```bash
 ./build.sh
@@ -55,10 +56,11 @@ The built files will be in the `dist/` directory.
 
 The site is configured for automatic deployment on Netlify. The build process:
 
-1. Runs `pdf_parsing/extract_document_info.py` to generate document info from parquet files
-2. Runs `generate_website_data.py` to create JSON files from document info CSV
-3. Applies keyword reduction using `violation_curation_keyword_reduction.csv` to consolidate similar violation keywords
-4. Builds the static site with Vite
+1. Installs Python dependencies with pip
+2. Runs `generate_website_data.py` to create JSON files from CSVs
+3. Runs `export_parquet_to_json.py` to export parquet documents to individual JSON files
+4. Applies keyword reduction using `violation_curation_keyword_reduction.csv`
+5. Builds the static site with Vite
 
 ### Keyword Reduction
 
@@ -81,10 +83,11 @@ The `netlify.toml` file configures:
 
 The dashboard uses data from:
 
-- **Parquet Files**: PDF text extracts in `../pdf_parsing/parquet_files/`
-- **Document Info CSV**: Generated from parquet files via `pdf_parsing/extract_document_info.py`
-- **SIR Violation Levels CSV**: Contains severity levels and keywords for Special Investigation Reports
-- **Keyword Reduction CSV**: Maps original keywords to consolidated versions for consistency
+- **Document Info CSV**: `../pdf_parsing/document_info.csv` - structured metadata about documents
+- **SIR Summaries CSV**: `../pdf_parsing/sir_summaries.csv` - AI-generated summaries for Special Investigation Reports
+- **SIR Violation Levels CSV**: `../pdf_parsing/sir_violation_levels.csv` - severity levels and keywords for SIRs
+- **Keyword Reduction CSV**: `../pdf_parsing/violation_curation_keyword_reduction.csv` - maps keywords to consolidated versions
+- **Parquet Files**: `../pdf_parsing/parquet_files/` - source PDF text extracts exported to individual document JSON files
 
 The dashboard derives all agency information directly from the document data (no separate facility metadata required).
 
@@ -93,11 +96,16 @@ The dashboard derives all agency information directly from the document data (no
 ```
 website/
 ├── index.html               # Main HTML file
+├── document.html            # Document detail page
+├── keywords.html            # Keywords analysis page
 ├── src/
 │   └── main.js              # JavaScript application logic
 ├── public/
-│   └── data/                # Generated JSON data files (git-ignored)
+│   ├── data/                # Generated JSON data files (git-ignored)
+│   └── documents/           # Individual document JSON files (git-ignored)
 ├── generate_website_data.py # Script to generate JSON from CSVs
+├── export_parquet_to_json.py # Script to export parquet to individual JSON files
+├── keyword_reduction.py     # Keyword consolidation utilities
 ├── build.sh                 # Build script for the entire site
 ├── vite.config.js           # Vite configuration
 ├── netlify.toml             # Netlify deployment configuration
@@ -111,25 +119,6 @@ website/
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build locally
 - `./build.sh` - Full build pipeline (data generation + site build)
-
-## Data Generation
-
-To regenerate the data manually:
-
-```bash
-# From the website directory
-cd website
-
-# Generate document info CSV from parquet files
-python3 ../pdf_parsing/extract_document_info.py \
-  --parquet-dir ../pdf_parsing/parquet_files \
-  -o ../document_info.csv
-
-# Generate JSON files for website (derives agency info from documents)
-python3 generate_website_data.py \
-  --document-csv ../document_info.csv \
-  --output-dir public/data
-```
 
 ## License
 
