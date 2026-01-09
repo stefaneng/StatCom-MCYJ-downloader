@@ -1163,6 +1163,7 @@ function handleUrlQueryString() {
     if (licenseStatusParam) {
         filters.licenseStatus = licenseStatusParam;
         // Disable active license filter when a specific license status is selected
+        // This is because the user explicitly chose a status
         filters.activeLicenseOnly = false;
         const activeLicenseCheckbox = document.getElementById('filterActiveLicenseOnly');
         if (activeLicenseCheckbox) {
