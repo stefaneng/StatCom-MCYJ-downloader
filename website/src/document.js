@@ -1,5 +1,7 @@
 // Document viewer page logic
 
+const BASE_URL = import.meta.env.BASE_URL || '/';
+
 let currentDocumentData = null;
 
 // Load and display document
@@ -51,7 +53,7 @@ async function loadDocument(sha256) {
     
     try {
         // Fetch document data
-        const response = await fetch(`/documents/${sha256}.json`);
+        const response = await fetch(`${BASE_URL}documents/${sha256}.json`);
         if (!response.ok) {
             throw new Error(`Failed to load document: ${response.statusText}`);
         }
@@ -62,7 +64,7 @@ async function loadDocument(sha256) {
         // Try to fetch metadata from agencies data
         let docMetadata = null;
         try {
-            const agenciesResponse = await fetch('/data/agencies_data.json');
+            const agenciesResponse = await fetch(`${BASE_URL}data/agencies_data.json`);
             if (agenciesResponse.ok) {
                 const agencies = await agenciesResponse.json();
                 
@@ -197,7 +199,7 @@ function displayDocument(docData, docMetadata) {
                     📋 Copy Document Text
                 </button>
                 ${docMetadata && docMetadata.agencyId ? `
-                    <a href="/?agency=${encodeURIComponent(docMetadata.agencyId)}" class="copy-link-btn" style="text-decoration: none;">
+                    <a href="${BASE_URL}?agency=${encodeURIComponent(docMetadata.agencyId)}" class="copy-link-btn" style="text-decoration: none;">
                         🏢 View Agency
                     </a>
                 ` : ''}

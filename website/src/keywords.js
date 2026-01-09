@@ -1,13 +1,15 @@
 // Keywords page - displays all keywords with counts
 import { Trie } from './trie.js';
 
+const BASE_URL = import.meta.env.BASE_URL || '/';
+
 let keywordTrie = new Trie();
 
 // Load and display data
 async function init() {
     try {
         // Fetch the agency data
-        const response = await fetch('/data/agencies_data.json');
+        const response = await fetch(`${BASE_URL}data/agencies_data.json`);
         if (!response.ok) {
             throw new Error(`Failed to load data: ${response.statusText}`);
         }
@@ -74,7 +76,7 @@ function renderKeywordBarChart() {
         const encodedKeyword = encodeURIComponent(item.keyword);
         return `
             <div class="bar-chart-row">
-                <a href="/?keywords=${encodedKeyword}" class="bar-chart-label" title="View documents with keyword: ${escapeHtml(item.keyword)}">${escapeHtml(item.keyword)}</a>
+                <a href="${BASE_URL}?keywords=${encodedKeyword}" class="bar-chart-label" title="View documents with keyword: ${escapeHtml(item.keyword)}">${escapeHtml(item.keyword)}</a>
                 <div class="bar-chart-bar-container">
                     <div class="bar-chart-bar" style="width: ${percentage}%"></div>
                 </div>
