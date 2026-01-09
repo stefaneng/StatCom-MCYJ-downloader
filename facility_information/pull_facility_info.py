@@ -110,7 +110,7 @@ def main():
     
     # Update license status to "Unknown" for agencies not in API response
     missing_count = 0
-    for license_number in existing_data.keys():
+    for license_number in existing_data:
         if license_number not in api_license_numbers:
             existing_data[license_number]['LicenseStatus'] = 'Unknown'
             missing_count += 1
