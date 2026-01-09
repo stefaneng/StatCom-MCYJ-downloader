@@ -94,15 +94,31 @@ def main():
 
     print(f"Fetched {len(agency_list)} agencies from API")
 
+    # Track which license numbers are in the API response
+    api_license_numbers = set()
+    
     # Merge data: update existing_data with API data (append-only logic)
-    # If license number is in CSV but not in API, keep CSV version
+    # If license number is in CSV but not in API, mark as "Unknown"
     # If license number is in API, use API version
     for agency in agency_list:
         license_number = agency.get('LicenseNumber')
         if license_number:
+            api_license_numbers.add(license_number)
             # Create row with only the columns we want
             row = {col: agency.get(col, "") for col in keep_cols}
             existing_data[license_number] = row
+    
+    # Update license status to "Unknown" for agencies not in API response
+    missing_count = 0
+    for license_number in existing_data.keys():
+        if license_number not in api_license_numbers:
+            existing_data[license_number]['LicenseStatus'] = 'Unknown'
+            missing_count += 1
+    
+    if missing_count > 0:
+        print(f"Updated {missing_count} agencies to 'Unknown' status (not found in API)")
+    else:
+        print("All agencies in CSV were found in API")
 
     # Write merged data back to CSV
     with open(csv_file, mode='w', newline='', encoding='utf-8') as f:
