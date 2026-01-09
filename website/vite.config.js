@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import react from '@vitejs/plugin-react'
 
 // Use VITE_BASE_URL environment variable if set, otherwise default to '/'
 // For GitHub Pages, set VITE_BASE_URL=/MCYJ-Datapipeline/ in the build environment
@@ -8,6 +9,7 @@ const base = process.env.VITE_BASE_URL || '/'
 
 export default defineConfig({
   base,
+  plugins: [react()],
   build: {
     outDir: '../dist',
     emptyOutDir: true,
