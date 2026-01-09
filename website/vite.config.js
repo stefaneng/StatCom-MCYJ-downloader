@@ -1,7 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
+// Use VITE_BASE_URL environment variable if set, otherwise default to '/'
+// For GitHub Pages, set VITE_BASE_URL=/MCYJ-Datapipeline/ in the build environment
+// For Netlify, the default '/' works correctly
+const base = process.env.VITE_BASE_URL || '/'
+
 export default defineConfig({
+  base,
   build: {
     outDir: '../dist',
     emptyOutDir: true,

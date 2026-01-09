@@ -73,6 +73,8 @@ jobs:
         run: |
           cd website
           npm run build
+        env:
+          VITE_BASE_URL: /MCYJ-Datapipeline/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

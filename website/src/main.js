@@ -4,6 +4,7 @@ import { Trie } from './trie.js';
 
 // Constants
 const DOM_READY_DELAY = 100; // Delay in ms to ensure DOM is ready for operations
+const BASE_URL = import.meta.env.BASE_URL || '/';
 
 let allAgencies = [];
 let filteredAgencies = [];
@@ -27,7 +28,7 @@ let agencyIdMap = new Map(); // Maps lowercase agency text to original agencyId
 async function init() {
     try {
         // Fetch the agency data
-        const response = await fetch('/data/agencies_data.json');
+        const response = await fetch(`${BASE_URL}data/agencies_data.json`);
         if (!response.ok) {
             throw new Error(`Failed to load data: ${response.statusText}`);
         }
@@ -643,7 +644,7 @@ function renderDocuments(agency) {
                 ` : ''}
                 ${d.sha256 ? `
                     <div style="margin-top: 8px;">
-                        <a href="/document.html?sha=${d.sha256}" target="_blank" class="view-document-btn" style="text-decoration: none; display: inline-block;">
+                        <a href="${BASE_URL}document.html?sha=${d.sha256}" target="_blank" class="view-document-btn" style="text-decoration: none; display: inline-block;">
                             📄 View Full Document
                         </a>
                     </div>
@@ -666,7 +667,7 @@ async function viewDocument(sha256, event) {
     }
     
     try {
-        const response = await fetch(`/documents/${sha256}.json`);
+        const response = await fetch(`${BASE_URL}documents/${sha256}.json`);
         if (!response.ok) {
             throw new Error(`Failed to load document: ${response.statusText}`);
         }
@@ -1021,7 +1022,7 @@ async function handleQueryStringDocument() {
     }
     
     // Redirect to document viewer page
-    window.location.href = `/document.html?sha=${sha}`;
+    window.location.href = `${BASE_URL}document.html?sha=${sha}`;
 }
 
 function copyAgencyLink(agencyId, event) {
@@ -1077,7 +1078,7 @@ function copyDocumentLink(sha256, event) {
         event.stopPropagation();
     }
     
-    const url = `${window.location.origin}/document.html?sha=${sha256}`;
+    const url = `${window.location.origin}${BASE_URL}document.html?sha=${sha256}`;
     
     // Helper function to show feedback on button
     const showCopyFeedback = (btn) => {
