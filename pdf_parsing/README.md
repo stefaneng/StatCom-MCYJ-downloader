@@ -62,18 +62,19 @@ Structured metadata extracted from documents:
 ### `sir_summaries.csv`
 
 AI-generated summaries for Special Investigation Reports:
-- Document identifiers (sha256, agency_id, agency_name, document_title, date)
+- `sha256` - Link to source document (join with document_info.csv for agency name, title, date)
 - `response` - AI-generated summary
 - `violation` - Whether violations were substantiated ("y" or "n")
-- API usage metrics (tokens, cost, duration)
+- API usage metrics (tokens, duration)
 
 ### `sir_violation_levels.csv`
 
 AI-classified severity levels for SIRs where violations were substantiated:
-- Document identifiers
+- `sha256` - Link to source document (join with document_info.csv for agency name, title, date)
 - `level` - Severity classification: "low", "moderate", or "severe"
 - `justification` - Explanation of the classification
 - `keywords` - JSON list of relevant keywords
+- API usage metrics (tokens, duration)
 
 ### `sir_theming.txt`
 
