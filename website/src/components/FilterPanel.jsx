@@ -77,33 +77,35 @@ export function FilterPanel({
                     </div>
                 </div>
 
-                {/* SIR Only Filter */}
+                {/* SIR Only Filter & Active License Only Filter */}
                 <div style={{ borderTop: '1px solid #ddd', paddingTop: '15px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input
-                            type="checkbox"
-                            checked={filters.sirOnly}
-                            onChange={(e) => onFilterChange('sirOnly', e.target.checked)}
-                            style={{ cursor: 'pointer' }}
-                        />
-                        <span>Special Investigation Reports Only</span>
-                    </label>
-                </div>
-
-                {/* Active License Only Filter */}
-                <div style={{ borderTop: '1px solid #ddd', paddingTop: '15px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input
-                            type="checkbox"
-                            checked={filters.activeLicenseOnly}
-                            onChange={(e) => onFilterChange('activeLicenseOnly', e.target.checked)}
-                            style={{ cursor: 'pointer' }}
-                        />
-                        <span>Active License Only</span>
-                    </label>
-                    <p style={{ color: '#666', fontSize: '0.8em', marginTop: '4px', marginLeft: '24px' }}>
-                        Limits results to agencies with Regular, Original, Provisional, or Inspected license status
-                    </p>
+                    <div className="checkbox-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px 30px' }}>
+                        <div>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={filters.sirOnly}
+                                    onChange={(e) => onFilterChange('sirOnly', e.target.checked)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                <span>Special Investigation Reports Only</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={filters.activeLicenseOnly}
+                                    onChange={(e) => onFilterChange('activeLicenseOnly', e.target.checked)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                <span>Active License Only</span>
+                            </label>
+                            <p style={{ color: '#666', fontSize: '0.8em', marginTop: '4px', marginLeft: '24px' }}>
+                                Limits results to agencies with Regular, Original, Provisional, or Inspected license status
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Facility Attribute Filters */}
