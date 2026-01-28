@@ -19,7 +19,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 import requests
@@ -65,15 +65,15 @@ def get_api_key() -> str:
     return api_key
 
 
-def get_all_sir_info(doc_info_csv: str) -> List[Tuple[str, Dict[str, str]]]:
+def get_all_sir_shas(doc_info_csv: str) -> List[str]:
     """
-    Get all information for documents that are SIRs from document_info.csv.
+    Get SHA256 hashes for all documents that are SIRs from document_info.csv.
     
     Args:
         doc_info_csv: Path to document_info.csv file
     
     Returns:
-        List of tuples (sha256, info_dict) for SIR documents
+        List of SHA256 hashes for SIR documents
     """
     doc_info_path = Path(doc_info_csv)
     if not doc_info_path.exists():
@@ -86,18 +86,7 @@ def get_all_sir_info(doc_info_csv: str) -> List[Tuple[str, Dict[str, str]]]:
     
     logger.info(f"Found {len(sirs)} SIRs in document info CSV")
     
-    # Convert to list of (sha256, info_dict) tuples
-    sir_list = []
-    for _, row in sirs.iterrows():
-        info = {
-            'agency_id': str(row['agency_id']) if pd.notna(row['agency_id']) else '',
-            'agency_name': str(row['agency_name']) if pd.notna(row['agency_name']) else '',
-            'document_title': str(row['document_title']) if pd.notna(row['document_title']) else '',
-            'date': str(row['date']) if pd.notna(row['date']) else '',
-        }
-        sir_list.append((str(row['sha256']), info))
-    
-    return sir_list
+    return [str(row['sha256']) for _, row in sirs.iterrows()]
 
 
 def get_existing_summary_shas(summaryqueries_path: str) -> Set[str]:
@@ -172,7 +161,7 @@ def query_openrouter(api_key: str, query: str, document_text: str) -> Dict:
         document_text: Full document text (all pages concatenated)
     
     Returns:
-        Dict with summary, violation, response, tokens, cost, cache_discount, and duration
+        Dict with summary, violation, response, tokens, and duration
     """
     start_time = time.time()
     
@@ -230,12 +219,6 @@ def query_openrouter(api_key: str, query: str, document_text: str) -> Dict:
     input_tokens = usage.get('prompt_tokens', 0)
     output_tokens = usage.get('completion_tokens', 0)
     
-    # Extract cost from usage object (OpenRouter returns it here with usage accounting enabled)
-    cost = usage.get('cost', None)
-    
-    # Extract cache discount information (shows savings from prompt caching)
-    cache_discount = usage.get('cache_discount', None)
-    
     # Parse JSON response
     summary = ''
     violation = ''
@@ -272,8 +255,6 @@ def query_openrouter(api_key: str, query: str, document_text: str) -> Dict:
         'response': ai_response,  # Keep raw response for debugging
         'input_tokens': input_tokens,
         'output_tokens': output_tokens,
-        'cost': cost if cost else '',
-        'cache_discount': cache_discount if cache_discount else '',
         'duration_ms': duration_ms
     }
 
@@ -332,14 +313,13 @@ def main():
     
     # Get all SIRs from document info CSV
     logger.info(f"Reading document info from {doc_info_path}...")
-    all_sirs = get_all_sir_info(str(doc_info_path))
+    all_sir_shas_list = get_all_sir_shas(str(doc_info_path))
     
-    if not all_sirs:
+    if not all_sir_shas_list:
         logger.warning("No SIRs found in document info CSV")
         sys.exit(0)
     
-    all_sir_shas = {sha for sha, _ in all_sirs}
-    sir_info_map = {sha: info for sha, info in all_sirs}
+    all_sir_shas = set(all_sir_shas_list)
     
     # Get existing summary shas
     existing_shas = get_existing_summary_shas(str(output_path))
@@ -364,9 +344,6 @@ def main():
         logger.info(f"\n{'='*80}")
         logger.info(f"Processing SIR {idx}/{len(shas_to_query)}: {sha}")
         
-        # Get info from document info map
-        sir_info = sir_info_map.get(sha, {})
-        
         logger.info("Loading document from parquet...")
         doc = load_document_from_parquet(sha, str(parquet_dir))
         
@@ -374,9 +351,6 @@ def main():
             logger.error(f"Could not find document in parquet files: {sha}")
             continue
         
-        logger.info(f"Agency: {sir_info.get('agency_name', 'Unknown')}")
-        logger.info(f"Title: {sir_info.get('document_title', 'Unknown')}")
-        logger.info(f"Date: {sir_info.get('date', 'Unknown')}")
         logger.info(f"Document: {len(doc['text_pages'])} pages, {len(doc['full_text'])} characters")
         
         # Query the API
@@ -388,8 +362,6 @@ def main():
             logger.info(f"  Input tokens: {result['input_tokens']}")
             logger.info(f"  Output tokens: {result['output_tokens']}")
             logger.info(f"  Duration: {result['duration_ms']/1000:.2f}s")
-            if result['cost']:
-                logger.info(f"  Cost: ${result['cost']:.6f}")
             logger.info(f"  Summary preview: {result['summary'][:150]}...")
             logger.info(f"  Violation: {result['violation']}")
 
@@ -404,16 +376,10 @@ def main():
             # Store result
             results.append({
                 'sha256': sha,
-                'agency_id': sir_info.get('agency_id', ''),
-                'agency_name': sir_info.get('agency_name', ''),
-                'document_title': sir_info.get('document_title', ''),
-                'date': sir_info.get('date', ''),
-                'query': args.query,
                 'response': result['summary'],  # Use parsed summary, not raw response
                 'violation': result['violation'],
                 'input_tokens': result['input_tokens'],
                 'output_tokens': result['output_tokens'],
-                'cost': result['cost'],
                 'duration_ms': result['duration_ms']
             })
             
@@ -437,9 +403,8 @@ def main():
     file_exists = output_path.exists()
     
     with open(output_path, 'a', newline='', encoding='utf-8') as f:
-        fieldnames = ['sha256', 'agency_id', 'agency_name', 'document_title', 'date',
-                     'query', 'response', 'violation',
-                     'input_tokens', 'output_tokens', 'cost', 'duration_ms']
+        fieldnames = ['sha256', 'response', 'violation',
+                     'input_tokens', 'output_tokens', 'duration_ms']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         
         if not file_exists:

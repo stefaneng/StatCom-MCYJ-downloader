@@ -93,15 +93,15 @@ def load_theming_instructions(theming_path: str) -> str:
         return f.read()
 
 
-def get_sirs_with_violations(summaries_csv: str) -> List[Dict[str, str]]:
+def get_sirs_with_violations(summaries_csv: str) -> List[str]:
     """
-    Get all SIRs from sir_summaries.csv where violations were substantiated.
+    Get SHA256 hashes for SIRs where violations were substantiated.
     
     Args:
         summaries_csv: Path to sir_summaries.csv file
     
     Returns:
-        List of dicts with SIR information for documents with violations
+        List of SHA256 hashes for documents with violations
     """
     summaries_path = Path(summaries_csv)
     if not summaries_path.exists():
@@ -114,19 +114,7 @@ def get_sirs_with_violations(summaries_csv: str) -> List[Dict[str, str]]:
     
     logger.info(f"Found {len(violations)} SIRs with substantiated violations")
     
-    # Convert to list of dicts
-    sir_list = []
-    for _, row in violations.iterrows():
-        sir_info = {
-            'sha256': str(row['sha256']),
-            'agency_id': str(row['agency_id']) if pd.notna(row['agency_id']) else '',
-            'agency_name': str(row['agency_name']) if pd.notna(row['agency_name']) else '',
-            'document_title': str(row['document_title']) if pd.notna(row['document_title']) else '',
-            'date': str(row['date']) if pd.notna(row['date']) else '',
-        }
-        sir_list.append(sir_info)
-    
-    return sir_list
+    return [str(row['sha256']) for _, row in violations.iterrows()]
 
 
 def get_existing_level_shas(levels_path: str) -> Set[str]:
@@ -226,7 +214,7 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
         document_text: Full document text (all pages concatenated)
     
     Returns:
-        Dict with level, justification, keywords, response, tokens, cost, and duration
+        Dict with level, justification, keywords, response, tokens, and duration
         
     Raises:
         Exception: If API request fails or JSON response cannot be parsed
@@ -285,12 +273,6 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
     usage = data.get('usage', {})
     input_tokens = usage.get('prompt_tokens', 0)
     output_tokens = usage.get('completion_tokens', 0)
-
-    # Extract cost from usage object
-    cost = usage.get('cost', None)
-
-    # Extract cache discount information (shows savings from prompt caching)
-    cache_discount = usage.get('cache_discount', None)
 
     # Extract cached tokens information
     prompt_tokens_details = usage.get('prompt_tokens_details', {})
@@ -371,8 +353,6 @@ def query_openrouter(api_key: str, theming_instructions: str, document_text: str
         'input_tokens': input_tokens,
         'output_tokens': output_tokens,
         'cached_tokens': cached_tokens,
-        'cost': cost if cost else '',
-        'cache_discount': cache_discount if cache_discount else '',
         'duration_ms': duration_ms
     }
 
@@ -449,8 +429,7 @@ def main():
         logger.warning("No SIRs with violations found in summaries CSV")
         sys.exit(0)
     
-    all_sir_shas = {sir['sha256'] for sir in all_sirs}
-    sir_info_map = {sir['sha256']: sir for sir in all_sirs}
+    all_sir_shas = set(all_sirs)
     
     # Get existing level shas
     existing_shas = get_existing_level_shas(str(output_path))
@@ -475,9 +454,6 @@ def main():
         logger.info(f"\n{'='*80}")
         logger.info(f"Processing SIR {idx}/{len(shas_to_query)}: {sha}")
         
-        # Get info from sir info map
-        sir_info = sir_info_map.get(sha, {})
-        
         logger.info("Loading document from parquet...")
         doc = load_document_from_parquet(sha, str(parquet_dir))
         
@@ -485,9 +461,6 @@ def main():
             logger.error(f"Could not find document in parquet files: {sha}")
             continue
         
-        logger.info(f"Agency: {sir_info.get('agency_name', 'Unknown')}")
-        logger.info(f"Title: {sir_info.get('document_title', 'Unknown')}")
-        logger.info(f"Date: {sir_info.get('date', 'Unknown')}")
         logger.info(f"Document: {len(doc['text_pages'])} pages, {len(doc['full_text'])} characters")
         
         # Query the API
@@ -500,8 +473,6 @@ def main():
             logger.info(f"  Output tokens: {result['output_tokens']}")
             logger.info(f"  Cached tokens: {result['cached_tokens']}")
             logger.info(f"  Duration: {result['duration_ms']/1000:.2f}s")
-            if result['cost']:
-                logger.info(f"  Cost: ${result['cost']:.6f}")
             logger.info(f"  Level: {result['level']}")
             logger.info(f"  Keywords: {result['keywords']}")
             logger.info(f"  Justification preview: {result['justification'][:150]}...")
@@ -509,16 +480,11 @@ def main():
             # Store result
             results.append({
                 'sha256': sha,
-                'agency_id': sir_info.get('agency_id', ''),
-                'agency_name': sir_info.get('agency_name', ''),
-                'document_title': sir_info.get('document_title', ''),
-                'date': sir_info.get('date', ''),
                 'level': result['level'],
                 'justification': result['justification'],
                 'keywords': json.dumps(result['keywords']),  # Store as JSON string
                 'input_tokens': result['input_tokens'],
                 'output_tokens': result['output_tokens'],
-                'cost': result['cost'],
                 'duration_ms': result['duration_ms']
             })
             
@@ -545,9 +511,8 @@ def main():
     file_exists = output_path.exists()
     
     with open(output_path, 'a', newline='', encoding='utf-8') as f:
-        fieldnames = ['sha256', 'agency_id', 'agency_name', 'document_title', 'date',
-                     'level', 'justification', 'keywords',
-                     'input_tokens', 'output_tokens', 'cost', 'duration_ms']
+        fieldnames = ['sha256', 'level', 'justification', 'keywords',
+                     'input_tokens', 'output_tokens', 'duration_ms']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         
         if not file_exists:
